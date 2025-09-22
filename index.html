@@ -171,6 +171,28 @@
     .hidden { display: none; }
     .inline-between { justify-content: space-between; }
     
+    /* Download buttons styles */
+    .download-buttons {
+      margin-top: 16px;
+      gap: 8px;
+    }
+    .download-btn {
+      flex: 1;
+    }
+    
+    /* Mobile responsive untuk download buttons */
+    @media (max-width: 768px) {
+      .download-buttons {
+        flex-direction: column;
+        gap: 6px;
+      }
+      .download-btn {
+        flex: none;
+        width: 100%;
+        min-height: 44px;
+      }
+    }
+    
     /* Desktop Tables Styles */
     .desktop-tables {
       grid-column: 2;
@@ -321,12 +343,25 @@
       /* Show mobile results on mobile */
       .mobile-results {
         display: block !important;
+        animation: fadeInUp 0.5s;
       }
       .panel { 
         order: 1;
         margin-bottom: 20px; 
         padding: 15px; 
         min-height: 50vh;
+        animation: slideDown 0.5s;
+      }
+      /* Animasi untuk customer-item */
+      .customer-item {
+        animation: fadeInScale 0.4s;
+      }
+      /* Animasi tombol proses */
+      #processBtn {
+        transition: background 0.2s, transform 0.2s;
+      }
+      #processBtn:active {
+        transform: scale(0.97);
       }
       /* Ensure proper order: form panel first, then map */
       #form-panel {
@@ -528,6 +563,20 @@
         user-select: none; 
       }
     }
+
+    /* Animasi keyframes */
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(30px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes slideDown {
+      from { opacity: 0; transform: translateY(-30px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes fadeInScale {
+      from { opacity: 0; transform: scale(0.95); }
+      to { opacity: 1; transform: scale(1); }
+    }
   </style>
 </head>
 <body>
@@ -594,11 +643,16 @@
       <div class="muted muted-note">
         Catatan: Gunakan Autocomplete Google untuk akurasi titik peta. Masukkan API key Anda sebelum menggunakan.
       </div>
+      <div class="inline download-buttons hidden" id="downloadButtons">
+    <!--    <button id="printBtn" class="secondary download-btn">🖨 Print Ringkasan</button> -->
+        <button id="downloadPdfBtn" class="secondary download-btn">📄 Download PDF</button>
+    <!--    <button id="downloadImgBtn" class="secondary download-btn">🖼️ Download Gambar</button> -->
+      </div>
     </section>
     
     <!-- Desktop Tables Section (hidden on mobile) -->
     <section class="desktop-tables hidden" id="desktopTables">
-      <div class="tables-container">
+      <div class="tables-container" id="printArea">
         <div class="table-section">
           <h3 class="table-title">Ringkasan Rute</h3>
           <div class="table-container">
@@ -652,6 +706,11 @@
     </section>
   </main>
 
+  <!-- Library untuk PDF dan Image Download -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.31/jspdf.plugin.autotable.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  
   <script>
     let map;
     let directionsService;
@@ -666,6 +725,9 @@
     let customPolylines = [];
     let infoWindow;
     let cityPlace = null;
+    let currentRouteData = null; // Menyimpan data rute saat ini
+    let truckMarker = null; // Marker untuk animasi truk
+    let animationInterval = null; // Interval untuk animasi
 
     const dom = {
       cityInput: () => document.getElementById('cityInput'),
@@ -688,6 +750,10 @@
       desktopTotalDistance: () => document.getElementById('desktopTotalDistance'),
       desktopTotalDuration: () => document.getElementById('desktopTotalDuration'),
       desktopDropBody: () => document.getElementById('desktopDropBody'),
+      // Download buttons
+      downloadButtons: () => document.getElementById('downloadButtons'),
+      downloadPdfBtn: () => document.getElementById('downloadPdfBtn'),
+      downloadImgBtn: () => document.getElementById('downloadImgBtn'),
     };
 
     const ROUTE_COLORS = ['#1e88e5','#43a047','#f4511e','#8e24aa','#fb8c00','#3949ab','#00acc1','#6d4c41','#e53935','#7cb342'];
@@ -781,14 +847,106 @@
       customPolylines = [];
     }
 
+    function clearTruckAnimation() {
+      if (truckMarker) {
+        truckMarker.setMap(null);
+        truckMarker = null;
+      }
+      if (animationInterval) {
+        clearInterval(animationInterval);
+        animationInterval = null;
+      }
+    }
+
+    function createTruckMarker(position) {
+      return new google.maps.Marker({
+        position: position,
+        map: map,
+        icon: {
+          url: 'data:image/svg+xml;charset=UTF-8,' + encodeURIComponent(`
+            <svg width="40" height="40" viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="20" cy="20" r="18" fill="#3b82f6" stroke="#fff" stroke-width="2"/>
+              <path d="M12 15h16v8h-2v-6H14v6h-2v-8z" fill="#fff"/>
+              <circle cx="16" cy="26" r="3" fill="#1e40af"/>
+              <circle cx="24" cy="26" r="3" fill="#1e40af"/>
+              <path d="M10 18h2v2h-2z" fill="#fff"/>
+              <path d="M28 18h2v2h-2z" fill="#fff"/>
+            </svg>
+          `),
+          scaledSize: new google.maps.Size(40, 40),
+          anchor: new google.maps.Point(20, 20)
+        },
+        zIndex: 1000
+      });
+    }
+
+    function animateTruckAlongRoute(route) {
+      clearTruckAnimation();
+      
+      const path = route.overview_path;
+      if (!path || path.length < 2) return;
+
+      let currentIndex = 0;
+      const totalPoints = path.length;
+      const animationDuration = 10000; // 10 detik
+      const intervalTime = 50; // Update setiap 50ms
+      const totalSteps = animationDuration / intervalTime;
+      const stepSize = totalPoints / totalSteps;
+
+      truckMarker = createTruckMarker(path[0]);
+
+      animationInterval = setInterval(() => {
+        currentIndex += stepSize;
+        
+        if (currentIndex >= totalPoints - 1) {
+          // Animasi selesai
+          clearInterval(animationInterval);
+          animationInterval = null;
+          // Pindahkan truk ke posisi terakhir
+          truckMarker.setPosition(path[totalPoints - 1]);
+          return;
+        }
+
+        const currentPoint = path[Math.floor(currentIndex)];
+        truckMarker.setPosition(currentPoint);
+
+        // Hitung rotasi berdasarkan arah gerakan
+        if (currentIndex > 0) {
+          const prevPoint = path[Math.floor(currentIndex - stepSize)];
+          const heading = google.maps.geometry.spherical.computeHeading(prevPoint, currentPoint);
+          truckMarker.setIcon({
+            url: 'data:image/svg+xml;charset=UTF-8,' + encodeURIComponent(`
+              <svg width="40" height="40" viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg">
+                <g transform="rotate(${heading} 20 20)">
+                  <circle cx="20" cy="20" r="18" fill="#3b82f6" stroke="#fff" stroke-width="2"/>
+                  <path d="M12 15h16v8h-2v-6H14v6h-2v-8z" fill="#fff"/>
+                  <circle cx="16" cy="26" r="3" fill="#1e40af"/>
+                  <circle cx="24" cy="26" r="3" fill="#1e40af"/>
+                  <path d="M10 18h2v2h-2z" fill="#fff"/>
+                  <path d="M28 18h2v2h-2z" fill="#fff"/>
+                </g>
+              </svg>
+            `),
+            scaledSize: new google.maps.Size(40, 40),
+            anchor: new google.maps.Point(20, 20)
+          });
+        }
+      }, intervalTime);
+    }
+
     function placeMarker(position, label) {
       const marker = new google.maps.Marker({
         position,
         map,
         title: label,
+        animation: google.maps.Animation.DROP,
+        icon: {
+          url: 'https://maps.gstatic.com/mapfiles/api-3/images/spotlight-poi2_hdpi.png',
+          scaledSize: new google.maps.Size(32, 32),
+        },
       });
       marker.addListener('mouseover', () => {
-        infoWindow.setContent('<div style="font-size:13px;">' + label + '</div>');
+        infoWindow.setContent('<div style="font-size:13px;font-weight:600;max-width:220px;">' + label + '</div>');
         infoWindow.open({ anchor: marker, map });
       });
       marker.addListener('mouseout', () => {
@@ -1084,35 +1242,48 @@
 
     function renderRoute(result, originPlaceLike, order, resolvedCustomers) {
       directionsRenderer.set('directions', null);
-
       const route = result.routes[0];
       const legs = route.legs;
-
       clearMarkers();
       clearPolylines();
-
       const originPos = originPlaceLike.geometry.location;
       placeMarker(originPos, 'Toko: ' + (originPlaceLike.formatted_address || 'Origin'));
-
       order.forEach((custIndex, idx) => {
         const c = resolvedCustomers[custIndex];
         placeMarker(c.location, 'Drop ' + (idx+1) + ': ' + (c.name || ('Customer ' + (idx+1))) + ' — ' + c.docNo + ' — ' + c.formatted);
       });
 
+      // Simpan data rute untuk download
+      let totalMeters = 0;
+      let totalSeconds = 0;
+      legs.forEach(leg => {
+        totalMeters += leg.distance?.value || 0;
+        totalSeconds += leg.duration?.value || 0;
+      });
+
+      currentRouteData = {
+        storeAddress: originPlaceLike.formatted_address || 'Origin',
+        legs: legs,
+        totalDistance: formatDistance(totalMeters),
+        totalDuration: formatDuration(totalSeconds),
+        dropPoints: order.map((custIndex, idx) => {
+          const c = resolvedCustomers[custIndex];
+          return {
+            name: c.name || ('Customer ' + (idx+1)),
+            docNo: c.docNo,
+            address: c.formatted
+          };
+        })
+      };
+      
       // Render mobile table
       const tbody = dom.legsBody();
       tbody.innerHTML = '';
-      let totalMeters = 0;
-      let totalSeconds = 0;
       for (let i = 0; i < legs.length; i++) {
         const leg = legs[i];
         const tr = document.createElement('tr');
         const fromName = leg.start_address;
         const toName = leg.end_address;
-        const meters = leg.distance?.value || 0;
-        const seconds = leg.duration?.value || 0;
-        totalMeters += meters;
-        totalSeconds += seconds;
         tr.innerHTML = `
           <td>${i+1}</td>
           <td>${fromName}</td>
@@ -1121,7 +1292,6 @@
           <td>${leg.duration?.text || '-'}</td>
         `;
         tbody.appendChild(tr);
-
         const path = [];
         leg.steps.forEach(s => {
           s.path.forEach(p => path.push(p));
@@ -1133,14 +1303,23 @@
           strokeOpacity: 0.9,
           strokeWeight: 5,
           map,
+          icons: [{
+            icon: { path: google.maps.SymbolPath.FORWARD_CLOSED_ARROW },
+            offset: '100%',
+          }],
         });
+        // Animasi polyline
+        poly.setOptions({ strokeOpacity: 0 });
+        setTimeout(() => poly.setOptions({ strokeOpacity: 0.9 }), 200 + i * 150);
         customPolylines.push(poly);
       }
-
       // Update mobile totals
-      dom.totalDistance().textContent = formatDistance(totalMeters);
-      dom.totalDuration().textContent = formatDuration(totalSeconds);
+      dom.totalDistance().textContent = currentRouteData.totalDistance;
+      dom.totalDuration().textContent = currentRouteData.totalDuration;
       dom.results().classList.remove('hidden');
+
+      // Tampilkan tombol download
+      dom.downloadButtons().classList.remove('hidden');
 
       // Render desktop table
       renderDesktopRouteTable(legs, totalMeters, totalSeconds);
@@ -1150,6 +1329,11 @@
       const bounds = new google.maps.LatLngBounds();
       route.overview_path.forEach(p => bounds.extend(p));
       map.fitBounds(bounds);
+
+      // Mulai animasi truk setelah polyline selesai di-render
+      setTimeout(() => {
+        animateTruckAlongRoute(route);
+      }, 1000);
     }
 
     function renderDesktopRouteTable(legs, totalMeters, totalSeconds) {
@@ -1187,6 +1371,7 @@
       dom.customers().innerHTML = '';
       dom.results().classList.add('hidden');
       dom.desktopTables().classList.add('hidden');
+      dom.downloadButtons().classList.add('hidden');
       dom.legsBody().innerHTML = '';
       dom.desktopLegsBody().innerHTML = '';
       dom.desktopDropBody().innerHTML = '';
@@ -1198,8 +1383,230 @@
       dom.legend().innerHTML = '';
       clearMarkers();
       clearPolylines();
+      clearTruckAnimation();
       directionsRenderer.set('directions', null);
       cityPlace = null;
+      currentRouteData = null;
+    }
+
+    // Fungsi untuk download PDF
+    function downloadPDF() {
+      if (!currentRouteData) {
+        showError('Tidak ada data rute untuk didownload. Silakan proses rute terlebih dahulu.');
+        return;
+      }
+
+      const { jsPDF } = window.jspdf;
+      const doc = new jsPDF('p', 'mm', 'a4'); // A4 portrait
+      
+      // Konstanta untuk A4
+      const pageWidth = 210; // A4 width in mm
+      const pageHeight = 297; // A4 height in mm
+      const margin = 15;
+      const contentWidth = pageWidth - (margin * 2);
+      
+      // Header dengan background
+      doc.setFillColor(102, 126, 234);
+      doc.rect(0, 0, pageWidth, 25, 'F');
+      
+      // Judul utama
+      doc.setTextColor(255, 255, 255);
+      doc.setFontSize(18);
+      doc.setFont(undefined, 'bold');
+      doc.text('RINGKASAN RUTE PENGIRIMAN', margin, 15);
+      
+      // Tanggal dan waktu (di atas kanan)
+      doc.setTextColor(0, 0, 0);
+      doc.setFontSize(9);
+      doc.setFont(undefined, 'normal');
+      doc.text(`Dibuat: ${new Date().toLocaleString('id-ID')}`, pageWidth - margin - 50, 30);
+      
+      // Informasi toko
+      doc.setFontSize(11);
+      doc.setFont(undefined, 'bold');
+      
+      // Wrap text jika alamat terlalu panjang
+      const maxWidth = pageWidth - margin - 25;
+      const addressLines = doc.splitTextToSize(currentRouteData.storeAddress, maxWidth);
+      doc.text(addressLines, margin, 35);
+      
+      // Garis pemisah
+      doc.setDrawColor(200, 200, 200);
+      doc.setLineWidth(0.5);
+      const addressHeight = addressLines.length * 4; // Estimasi tinggi text
+      const separatorY = 40 + addressHeight;
+      doc.line(margin, separatorY, pageWidth - margin, separatorY);
+      
+      let currentY = separatorY + 10;
+      
+      // Ringkasan rute
+      doc.setFontSize(14);
+      doc.setFont(undefined, 'bold');
+      doc.setTextColor(102, 126, 234);
+      doc.text('RINGKASAN RUTE', margin, currentY);
+      currentY += 8;
+      
+      // Tabel ringkasan rute
+      const routeHeaders = ['#', 'Dari', 'Ke', 'Jarak', 'Durasi'];
+      const routeData = currentRouteData.legs.map((leg, index) => [
+        index + 1,
+        leg.start_address.length > 50 ? leg.start_address.substring(0, 47) + '...' : leg.start_address,
+        leg.end_address.length > 50 ? leg.end_address.substring(0, 47) + '...' : leg.end_address,
+        leg.distance?.text || '-',
+        leg.duration?.text || '-'
+      ]);
+      
+      // Tambahkan total
+      routeData.push(['', '', 'TOTAL', currentRouteData.totalDistance, currentRouteData.totalDuration]);
+      
+      doc.autoTable({
+        head: [routeHeaders],
+        body: routeData,
+        startY: currentY,
+        margin: { left: margin, right: margin },
+        styles: { 
+          fontSize: 9,
+          cellPadding: 3,
+          lineColor: [200, 200, 200],
+          lineWidth: 0.5
+        },
+        headStyles: { 
+          fillColor: [102, 126, 234],
+          textColor: [255, 255, 255],
+          fontStyle: 'bold',
+          fontSize: 10
+        },
+        alternateRowStyles: { fillColor: [248, 250, 252] },
+        columnStyles: {
+          0: { cellWidth: 12, halign: 'center' }, // Nomor
+          1: { cellWidth: 65, halign: 'left' },  // Dari
+          2: { cellWidth: 65, halign: 'left' },  // Ke
+          3: { cellWidth: 25, halign: 'center' }, // Jarak
+          4: { cellWidth: 25, halign: 'center' }  // Durasi
+        },
+        didDrawPage: function(data) {
+          // Footer untuk setiap halaman
+          const pageNumber = doc.internal.getCurrentPageInfo().pageNumber;
+          const totalPages = doc.internal.getNumberOfPages();
+          
+          doc.setFontSize(8);
+          doc.setTextColor(100, 100, 100);
+          doc.text(`Halaman ${pageNumber} dari ${totalPages}`, margin, pageHeight - 10);
+          doc.text(`Mapping Rute Pengiriman`, pageWidth - margin - 50, pageHeight - 10);
+        }
+      });
+      
+      // Daftar drop points
+      currentY = doc.lastAutoTable.finalY + 15;
+      
+      // Cek apakah perlu halaman baru
+      if (currentY > pageHeight - 80) {
+        doc.addPage();
+        currentY = 20;
+      }
+      
+      doc.setFontSize(14);
+      doc.setFont(undefined, 'bold');
+      doc.setTextColor(102, 126, 234);
+      doc.text('DAFTAR DROP POINTS', margin, currentY);
+      currentY += 8;
+      
+      const dropHeaders = ['#', 'Nama Customer', 'No. Dokumen', 'Alamat', 'Urutan'];
+      const dropData = currentRouteData.dropPoints.map((drop, index) => [
+        index + 1,
+        drop.name.length > 25 ? drop.name.substring(0, 22) + '...' : drop.name,
+        drop.docNo.length > 15 ? drop.docNo.substring(0, 12) + '...' : drop.docNo,
+        drop.address.length > 40 ? drop.address.substring(0, 37) + '...' : drop.address,
+        `Drop ${index + 1}`
+      ]);
+      
+      doc.autoTable({
+        head: [dropHeaders],
+        body: dropData,
+        startY: currentY,
+        margin: { left: margin, right: margin },
+        styles: { 
+          fontSize: 8,
+          cellPadding: 2.5,
+          lineColor: [200, 200, 200],
+          lineWidth: 0.5
+        },
+        headStyles: { 
+          fillColor: [102, 126, 234],
+          textColor: [255, 255, 255],
+          fontStyle: 'bold',
+          fontSize: 9
+        },
+        alternateRowStyles: { fillColor: [248, 250, 252] },
+        columnStyles: {
+          0: { cellWidth: 10, halign: 'center' }, // Nomor
+          1: { cellWidth: 40, halign: 'left' },   // Nama
+          2: { cellWidth: 30, halign: 'center' }, // No. Dokumen
+          3: { cellWidth: 80, halign: 'left' },   // Alamat
+          4: { cellWidth: 20, halign: 'center' }  // Urutan
+        },
+        didDrawPage: function(data) {
+          // Footer untuk setiap halaman
+          const pageNumber = doc.internal.getCurrentPageInfo().pageNumber;
+          const totalPages = doc.internal.getNumberOfPages();
+          
+          doc.setFontSize(8);
+          doc.setTextColor(100, 100, 100);
+          doc.text(`Halaman ${pageNumber} dari ${totalPages}`, margin, pageHeight - 10);
+          doc.text(`Mapping Rute Pengiriman`, pageWidth - margin - 50, pageHeight - 10);
+        }
+      });
+      
+      // Download
+      doc.save(`ringkasan-rute-${new Date().toISOString().split('T')[0]}.pdf`);
+    }
+
+    // Fungsi untuk download gambar
+    function downloadImage() {
+      if (!currentRouteData) {
+        showError('Tidak ada data rute untuk didownload. Silakan proses rute terlebih dahulu.');
+        return;
+      }
+
+      // Tampilkan desktop tables untuk capture
+      dom.desktopTables().classList.remove('hidden');
+      
+      // Tunggu sebentar agar elemen ter-render
+      setTimeout(() => {
+        const element = document.getElementById('printArea');
+        
+        html2canvas(element, {
+          scale: 2,
+          useCORS: true,
+          allowTaint: true,
+          backgroundColor: '#ffffff',
+          width: element.offsetWidth,
+          height: element.offsetHeight
+        }).then(canvas => {
+          // Buat link download
+          const link = document.createElement('a');
+          link.download = `ringkasan-rute-${new Date().toISOString().split('T')[0]}.png`;
+          link.href = canvas.toDataURL('image/png');
+          
+          // Trigger download
+          document.body.appendChild(link);
+          link.click();
+          document.body.removeChild(link);
+          
+          // Sembunyikan kembali desktop tables di mobile
+          if (window.innerWidth <= 768) {
+            dom.desktopTables().classList.add('hidden');
+          }
+        }).catch(error => {
+          console.error('Error generating image:', error);
+          showError('Gagal membuat gambar. Silakan coba lagi.');
+          
+          // Sembunyikan kembali desktop tables di mobile
+          if (window.innerWidth <= 768) {
+            dom.desktopTables().classList.add('hidden');
+          }
+        });
+      }, 100);
     }
 
     function applyCityBiasToAutocompletes() {
@@ -1265,11 +1672,26 @@
       dom.addCustomerBtn().addEventListener('click', () => addCustomerItem());
       dom.processBtn().addEventListener('click', processRoute);
       dom.resetBtn().addEventListener('click', resetAll);
+      dom.downloadPdfBtn().addEventListener('click', downloadPDF);
+      dom.downloadImgBtn().addEventListener('click', downloadImage);
     }
 
     window.initMap = initMap;
+
+    // PRINT FEATURE
+    document.addEventListener('DOMContentLoaded', function() {
+      const printBtn = document.getElementById('printBtn');
+      if (printBtn) {
+        printBtn.addEventListener('click', function() {
+          // Sembunyikan elemen yang tidak perlu saat print
+          document.body.classList.add('printing');
+          window.print();
+          setTimeout(() => document.body.classList.remove('printing'), 1000);
+        });
+      }
+    });
   </script>
   <!-- Pastikan API key memiliki akses Maps JavaScript API, Places API, dan Distance Matrix API -->
-  <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAxWsTliFhn3XDDCyjOuB4N2DYAwgksfBw&libraries=places&callback=initMap" async defer></script>
+  <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAxWsTliFhn3XDDCyjOuB4N2DYAwgksfBw&libraries=places,geometry&callback=initMap" async defer></script>
 </body>
 </html>
