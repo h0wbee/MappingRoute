@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Mapping Rute Pengiriman by Ilham SWM</title>
+  <title>Mapping Rute Pengiriman</title>
   <style>
     body { 
       font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; 
@@ -581,7 +581,7 @@
 </head>
 <body>
   <header>
-    <h1>Mapping Rute Pengiriman by Ilham SWM</h1>
+    <h1>Mapping Rute Pengiriman</h1>
   </header>
   <main>
     <section class="panel" id="form-panel">
@@ -646,6 +646,7 @@
       <div class="inline download-buttons hidden" id="downloadButtons">
     <!--    <button id="printBtn" class="secondary download-btn">🖨 Print Ringkasan</button> -->
         <button id="downloadPdfBtn" class="secondary download-btn">📄 Download PDF</button>
+        <button id="downloadXlsxBtn" class="secondary download-btn">📊 Download Excel</button>
     <!--    <button id="downloadImgBtn" class="secondary download-btn">🖼️ Download Gambar</button> -->
       </div>
     </section>
@@ -706,10 +707,11 @@
     </section>
   </main>
 
-  <!-- Library untuk PDF dan Image Download -->
+  <!-- Library untuk PDF, Image, dan Excel Download -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.31/jspdf.plugin.autotable.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
   
   <script>
     let map;
@@ -753,6 +755,7 @@
       // Download buttons
       downloadButtons: () => document.getElementById('downloadButtons'),
       downloadPdfBtn: () => document.getElementById('downloadPdfBtn'),
+      downloadXlsxBtn: () => document.getElementById('downloadXlsxBtn'),
       downloadImgBtn: () => document.getElementById('downloadImgBtn'),
     };
 
@@ -1561,6 +1564,172 @@
       doc.save(`ringkasan-rute-${new Date().toISOString().split('T')[0]}.pdf`);
     }
 
+    // Fungsi untuk download Excel
+    function downloadExcel() {
+      if (!currentRouteData) {
+        showError('Tidak ada data rute untuk didownload. Silakan proses rute terlebih dahulu.');
+        return;
+      }
+
+      // Buat workbook baru
+      const wb = XLSX.utils.book_new();
+      
+      // Sheet 1: Ringkasan Rute
+      const routeData = [
+        ['RINGKASAN RUTE PENGIRIMAN'],
+        [''],
+        ['Alamat Toko:', currentRouteData.storeAddress],
+        ['Tanggal Dibuat:', new Date().toLocaleString('id-ID')],
+        [''],
+        ['RINGKASAN RUTE'],
+        ['#', 'Dari', 'Ke', 'Jarak', 'Durasi']
+      ];
+
+      // Tambahkan data rute
+      currentRouteData.legs.forEach((leg, index) => {
+        routeData.push([
+          index + 1,
+          leg.start_address,
+          leg.end_address,
+          leg.distance?.text || '-',
+          leg.duration?.text || '-'
+        ]);
+      });
+
+      // Tambahkan total
+      routeData.push(['', '', 'TOTAL', currentRouteData.totalDistance, currentRouteData.totalDuration]);
+
+      // Buat worksheet untuk ringkasan rute
+      const ws1 = XLSX.utils.aoa_to_sheet(routeData);
+      
+      // Styling untuk header
+      ws1['!cols'] = [
+        { wch: 5 },   // #
+        { wch: 50 },  // Dari
+        { wch: 50 },  // Ke
+        { wch: 15 },  // Jarak
+        { wch: 15 }   // Durasi
+      ];
+
+      // Merge cells untuk header
+      ws1['!merges'] = [
+        { s: { r: 0, c: 0 }, e: { r: 0, c: 4 } }, // Judul utama
+        { s: { r: 2, c: 0 }, e: { r: 2, c: 1 } }, // Alamat Toko
+        { s: { r: 3, c: 0 }, e: { r: 3, c: 1 } }, // Tanggal
+        { s: { r: 5, c: 0 }, e: { r: 5, c: 4 } }  // Ringkasan Rute
+      ];
+
+      XLSX.utils.book_append_sheet(wb, ws1, 'Ringkasan Rute');
+
+      // Sheet 2: Daftar Drop Points
+      const dropData = [
+        ['DAFTAR DROP POINTS'],
+        [''],
+        ['Alamat Toko:', currentRouteData.storeAddress],
+        ['Tanggal Dibuat:', new Date().toLocaleString('id-ID')],
+        [''],
+        ['DETAIL DROP POINTS'],
+        ['#', 'Nama Customer', 'No. Dokumen', 'Alamat', 'Urutan']
+      ];
+
+      // Tambahkan data drop points
+      currentRouteData.dropPoints.forEach((drop, index) => {
+        dropData.push([
+          index + 1,
+          drop.name,
+          drop.docNo,
+          drop.address,
+          `Drop ${index + 1}`
+        ]);
+      });
+
+      // Buat worksheet untuk drop points
+      const ws2 = XLSX.utils.aoa_to_sheet(dropData);
+      
+      // Styling untuk header
+      ws2['!cols'] = [
+        { wch: 5 },   // #
+        { wch: 25 },  // Nama Customer
+        { wch: 20 },  // No. Dokumen
+        { wch: 60 },  // Alamat
+        { wch: 15 }   // Urutan
+      ];
+
+      // Merge cells untuk header
+      ws2['!merges'] = [
+        { s: { r: 0, c: 0 }, e: { r: 0, c: 4 } }, // Judul utama
+        { s: { r: 2, c: 0 }, e: { r: 2, c: 1 } }, // Alamat Toko
+        { s: { r: 3, c: 0 }, e: { r: 3, c: 1 } }, // Tanggal
+        { s: { r: 5, c: 0 }, e: { r: 5, c: 4 } }  // Detail Drop Points
+      ];
+
+      XLSX.utils.book_append_sheet(wb, ws2, 'Drop Points');
+
+      // Sheet 3: Statistik Rute
+      const statsData = [
+        ['STATISTIK RUTE PENGIRIMAN'],
+        [''],
+        ['Alamat Toko:', currentRouteData.storeAddress],
+        ['Tanggal Dibuat:', new Date().toLocaleString('id-ID')],
+        [''],
+        ['STATISTIK'],
+        ['Total Jarak:', currentRouteData.totalDistance],
+        ['Total Durasi:', currentRouteData.totalDuration],
+        ['Jumlah Drop Points:', currentRouteData.dropPoints.length],
+        [''],
+        ['RINCIAN PER SEGMENT'],
+        ['Segment', 'Dari', 'Ke', 'Jarak', 'Durasi', 'Persentase Jarak']
+      ];
+
+      // Hitung total jarak dalam meter untuk persentase
+      let totalMeters = 0;
+      currentRouteData.legs.forEach(leg => {
+        totalMeters += leg.distance?.value || 0;
+      });
+
+      // Tambahkan rincian per segment
+      currentRouteData.legs.forEach((leg, index) => {
+        const segmentMeters = leg.distance?.value || 0;
+        const percentage = totalMeters > 0 ? ((segmentMeters / totalMeters) * 100).toFixed(1) + '%' : '0%';
+        
+        statsData.push([
+          `Segment ${index + 1}`,
+          leg.start_address,
+          leg.end_address,
+          leg.distance?.text || '-',
+          leg.duration?.text || '-',
+          percentage
+        ]);
+      });
+
+      // Buat worksheet untuk statistik
+      const ws3 = XLSX.utils.aoa_to_sheet(statsData);
+      
+      // Styling untuk header
+      ws3['!cols'] = [
+        { wch: 15 },  // Segment
+        { wch: 40 },  // Dari
+        { wch: 40 },  // Ke
+        { wch: 15 },  // Jarak
+        { wch: 15 },  // Durasi
+        { wch: 15 }   // Persentase
+      ];
+
+      // Merge cells untuk header
+      ws3['!merges'] = [
+        { s: { r: 0, c: 0 }, e: { r: 0, c: 5 } }, // Judul utama
+        { s: { r: 2, c: 0 }, e: { r: 2, c: 1 } }, // Alamat Toko
+        { s: { r: 3, c: 0 }, e: { r: 3, c: 1 } }, // Tanggal
+        { s: { r: 5, c: 0 }, e: { r: 5, c: 5 } }  // Statistik
+      ];
+
+      XLSX.utils.book_append_sheet(wb, ws3, 'Statistik');
+
+      // Download file
+      const fileName = `ringkasan-rute-${new Date().toISOString().split('T')[0]}.xlsx`;
+      XLSX.writeFile(wb, fileName);
+    }
+
     // Fungsi untuk download gambar
     function downloadImage() {
       if (!currentRouteData) {
@@ -1673,6 +1842,7 @@
       dom.processBtn().addEventListener('click', processRoute);
       dom.resetBtn().addEventListener('click', resetAll);
       dom.downloadPdfBtn().addEventListener('click', downloadPDF);
+      dom.downloadXlsxBtn().addEventListener('click', downloadExcel);
       dom.downloadImgBtn().addEventListener('click', downloadImage);
     }
 
@@ -1695,4 +1865,3 @@
   <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAxWsTliFhn3XDDCyjOuB4N2DYAwgksfBw&libraries=places,geometry&callback=initMap" async defer></script>
 </body>
 </html>
-
