@@ -1,0 +1,401 @@
+[
+  {
+    "store": "10003 - Cibubur - BGR",
+    "address": "Jl. Alternatif Cibubur, Jatikarya, Kec. Jatisampurna, Kota Bks, Jawa Barat",
+    "postal_code": "17435",
+    "latitude": -6.381459545279069,
+    "longitude": 106.93103825405491
+  },
+  {
+    "store": "10004 - Daan Mogot - JKT",
+    "address": "Jl. Tampak Siring No.1 Blok KK, RT.2/RW.12, Kalideres, Kec. Kalideres, Kota Jakarta Barat, Daerah Khusus Ibukota Jakarta",
+    "postal_code": "11840",
+    "latitude": -6.154132274902926,
+    "longitude": 106.71442057825412
+  },
+  {
+    "store": "10005 - Percetakan Negara - JKT",
+    "address": "Jl. Percetakan Negara, Rawasari, Kec. Cemp. Putih, Kota Jakarta Pusat, Daerah Khusus Ibukota Jakarta",
+    "postal_code": "10570",
+    "latitude": -6.189177130764026,
+    "longitude": 106.86215650987576
+  },
+  {
+    "store": "10006 - Pasar Baru - TGR",
+    "address": "Jl. Moh. Toha No.72, Pasar Baru, Bugel, Kec. Karawaci, Kota Tangerang, Banten ",
+    "postal_code": "15113",
+    "latitude": -6.171252727134593,
+    "longitude": 106.61096826754638
+  },
+  {
+    "store": "10007 - Pondok Betung Bintaro - TGR",
+    "address": "Jl. Pd. Betung Raya, RT.12/RW.03, Pd. Betung, Kec. Pd. Aren, Kota Tangerang Selatan, Banten",
+    "postal_code": "15225",
+    "latitude": -6.259447772075177,
+    "longitude": 106.7474904127332
+  },
+  {
+    "store": "10009 - Cinere - DPK",
+    "address": "Jl. Cinere Raya, RT.001/RW.08, Gandul, Kec. Cinere, Kota Depok, Jawa Barat ",
+    "postal_code": "16514",
+    "latitude": -6.332605933172437,
+    "longitude": 106.78333898288966
+  },
+  {
+    "store": "10010 - Depok - DPK",
+    "address": "Jl. Margonda Raya No.202, Kemiri Muka, Kecamatan Beji, Kota Depok, Jawa Barat",
+    "postal_code": "16243",
+    "latitude": -6.384745816533607,
+    "longitude": 106.82931372059547
+  },
+  {
+    "store": "10011 - Gading Serpong - TGR",
+    "address": "Jl. Gading Serpong Boulevard Blok Mitra10, Curug Sangereng, Kec. Klp. Dua, Kabupaten Tangerang, Banten",
+    "postal_code": "15820",
+    "latitude": -6.250535873260545,
+    "longitude": 106.62620764055947
+  },
+  {
+    "store": "10015 - Iskandar Bogor - BGR",
+    "address": "Jl. Baru - Bogor, Kedungbadak, Kec. Tanah Sereal, Kota Bogor, Jawa Barat ",
+    "postal_code": "16164",
+    "latitude": -6.561999966466032,
+    "longitude": 106.7924128252213
+  },
+  {
+    "store": "10038 - QBig - TGR",
+    "address": "Jl. BSD Raya Utama, Lengkong Kulon, Kec. Pagedangan, Kabupaten Tangerang, Banten",
+    "postal_code": "15331",
+    "latitude": -6.286463179101537,
+    "longitude": 106.63679158288907
+  },
+  {
+    "store": "10040 - Fatmawati - JKT",
+    "address": "Jl. RS. Fatmawati Raya No.15 H, RT.1/RW.7, Gandaria Utara, Kec. Kby. Baru, Kota Jakarta Selatan, Daerah Khusus Ibukota Jakarta",
+    "postal_code": "12140",
+    "latitude": -6.26163494540557,
+    "longitude": 106.79636136754732
+  },
+  {
+    "store": "10042 - Pantai Indah Kapuk - JKT",
+    "address": "Jl. Mandara Permai VII, Kapuk Muara, Kecamatan Penjaringan, Jkt Utara, Daerah Khusus Ibukota Jakarta",
+    "postal_code": "14460",
+    "latitude": -6.115029444811184,
+    "longitude": 106.75535890987494
+  },
+  {
+    "store": "10044 - Kota Harapan Indah - BKS",
+    "address": "Jl. Harapan Indah Boulevard No.9B, Pejuang, Kecamatan Medan Satria, Kota Bks, Jawa Barat",
+    "postal_code": "17131",
+    "latitude": -6.1847254626482835,
+    "longitude": 106.97343904055879
+  },
+  {
+    "store": "10046 - Cibarusah - CKR",
+    "address": "Jl. Raya Cikarang - Cibarusah No.68G, Sukaresmi, Cikarang Sel., Kabupaten Bekasi, Jawa Barat",
+    "postal_code": "17532",
+    "latitude": -6.322388375720684,
+    "longitude": 107.12748615405421
+  },
+  {
+    "store": "10048 - Siliwangi Pamulang - TGR",
+    "address": "Ruko Pamulang Permai 1, Blok SH Jl. Pamulang Permai No.17, Pamulang Bar., Kec. Pamulang, Kota Tangerang Selatan, Banten",
+    "postal_code": "15417",
+    "latitude": -6.342452546107944,
+    "longitude": 106.72984559638357
+  },
+  {
+    "store": "10050 - Pesanggrahan - JKT",
+    "address": "Jl. Pesanggrahan No.1, Meruya Utara, Kec. Kembangan, Kota Jakarta Barat, Daerah Khusus Ibukota Jakarta",
+    "postal_code": "11620",
+    "latitude": -6.195996364457792,
+    "longitude": 106.75631176754672
+  },
+  {
+    "store": "10052 - Telukjambe Timur - KWG",
+    "address": "Jl. Interchange, Wadas, Telukjambe Timur, Karawang, Jawa Barat",
+    "postal_code": "41361",
+    "latitude": -6.311529474612794,
+    "longitude": 107.27259149638324
+  },
+  {
+    "store": "10054 - Bitung - TGR",
+    "address": "Griya idola Industrial park, Jl. Raya Serang Km.12, Sukadamai, Kec. Cikupa, Kabupaten Tangerang, Banten",
+    "postal_code": "15710",
+    "latitude": -6.226016234847111,
+    "longitude": 106.54581535405316
+  },
+  {
+    "store": "10058 - Kalimalang Baru - BKS",
+    "address": "Jl. Raya Kalimalang No.007, RT.010/RW.002, Jakasampurna, Kec. Bekasi Bar., Kota Bks, Jawa Barat",
+    "postal_code": "17145",
+    "latitude": -6.249068513388823,
+    "longitude": 106.960591533169
+  },
+  {
+    "store": "10060 - Jati Makmur - BKS",
+    "address": "Jl. Raya Jati Makmur No.115, RT.001/RW.013, Jatimakmur, Kec. Pd. Gede, Kota Bks, Jawa Barat",
+    "postal_code": "17413",
+    "latitude": -6.2876467578183295,
+    "longitude": 106.93800442521832
+  },
+  {
+    "store": "10064 - Cibinong - BGR",
+    "address": "Jl. Raya Jakarta-Bogor No.Km.41, RW.5, Ciriung, Kec. Cibinong, Kabupaten Bogor, Jawa Barat",
+    "postal_code": "16916",
+    "latitude": -6.461181629361602,
+    "longitude": 106.85747502522034
+  },
+  {
+    "store": "10066 - Pondok Bambu - JKT",
+    "address": "Jl. Pahlawan Revolusi No.10, Pd. Bambu, Kec. Duren Sawit, Kota Jakarta Timur, Daerah Khusus Ibukota Jakarta",
+    "postal_code": "13430",
+    "latitude": -6.232010870261937,
+    "longitude": 106.89634155220563
+  },
+  {
+    "store": "10068 - Bintaro Jaya - TGR",
+    "address": "Bintaro Jaya, Jl. Boulevard Bintaro Jaya No.B2-01 Kavling Blok S6, Parigi, Pondok Aren, South Tangerang City, Banten",
+    "postal_code": "15228",
+    "latitude": -6.267856611371462,
+    "longitude": 106.69080040987656
+  },
+  {
+    "store": "10069 - Shila Sawangan - DPK",
+    "address": "Jl. Senopati Boulevard No.1B, Bojongsari Lama, Kec. Bojongsari, Kota Depok, Jawa Barat",
+    "postal_code": "16517",
+    "latitude": -6.40249113627524,
+    "longitude": 106.74401501172579
+  },
+  {
+    "store": "10070 - Serang - SRG",
+    "address": "Ex. Giant Sempu, Jl. Raya Pandeglang No.74, Cipare, Kec. Serang, Kota Serang, Banten",
+    "postal_code": "42117",
+    "latitude": -6.128757721225223,
+    "longitude": 106.15952909453368
+  },
+  {
+    "store": "10072 - Jababeka - BKS",
+    "address": "P55C+JJR, Jl. H.Usmar Ismail, Mekarmukti, Kec. Cikarang Utara, Kabupaten Bekasi, Jawa Barat 17530",
+    "postal_code": "17530",
+    "latitude": -6.290834357101643,
+    "longitude": 107.17170408990745
+  },
+  {
+    "store": "11000 - Tallasa City Makassar - MKS",
+    "address": "Kawasan Tallasa City, Jalan Lingkar Barat, Kapasa, Kec. Tamalanrea, Kota Makassar, Sulawesi Selatan",
+    "postal_code": "90245",
+    "latitude": -5.123609819372546,
+    "longitude": 119.49220663870037
+  },
+  {
+    "store": "11002 - Kendari - KDI",
+    "address": "Jl. Brigjen M. Yoenoes, Bende, Kec. Kadia, Kota Kendari, Sulawesi Tenggara",
+    "postal_code": "93111",
+    "latitude": -3.985090249656857,
+    "longitude": 122.51967710985471
+  },
+  {
+    "store": "12000 - Mataram - MTR",
+    "address": "Jl. Terusan Bung Hatta No.107, Karang Baru, Kec. Selaparang, Kota Mataram, Nusa Tenggara Bar.",
+    "postal_code": "83123",
+    "latitude": -8.567341309386926,
+    "longitude": 116.11755599641053
+  },
+  {
+    "store": "13000 - Balikpapan Baru - BPN",
+    "address": "Jl. MT Haryono No.D1, Gn. Bahagia, Kecamatan Balikpapan Selatan, Kota Balikpapan, Kalimantan Timur",
+    "postal_code": "76114",
+    "latitude": -1.24247889348015,
+    "longitude": 116.8719603675061
+  },
+  {
+    "store": "13002 - Pal88 Banjarmasin - BJN",
+    "address": "Jl. A. Yani No.KM 8 8, RW.8, PAL 8, Manarap Lama, Kec. Kertak Hanyar, Kabupaten Banjar, Kalimantan Selatan",
+    "postal_code": "70654",
+    "latitude": -3.366978255322339,
+    "longitude": 114.63987735402634
+  },
+  {
+    "store": "13004 - Samarinda - SMR",
+    "address": "Jl. Jenderal Ahmad Yani I No.6, Temindung Permai, Kec. Sungai Pinang, Kota Samarinda, Kalimantan Timur",
+    "postal_code": "75242",
+    "latitude": -0.47765798717636954,
+    "longitude": 117.15635253866664
+  },
+  {
+    "store": "20000 - Batam - BTM",
+    "address": "Batam Centre, Jl. Putri Malu, Teluk Tering, Batam Kota, Batam City, Riau Islands",
+    "postal_code": "29461",
+    "latitude": 1.1332140325463917,
+    "longitude": 104.04640778099
+  },
+  {
+    "store": "30000 - Medan - MDN",
+    "address": "Jl. Gatot Subroto No.124/152 A, Sei Sikambing C. II, Kec. Medan Helvetia, Kota Medan, Sumatera Utara",
+    "postal_code": "20123",
+    "latitude": 3.591679558480165,
+    "longitude": 98.64067461166873
+  },
+  {
+    "store": "30005 - Pekan Baru - PBR",
+    "address": "Gedung Mitra10, Jl. Soekarno-Hatta, Labuh Baru Tim., Kec. Payung Sekaki, Kota Pekanbaru, Riau",
+    "postal_code": "28292",
+    "latitude": 0.5039191266300515,
+    "longitude": 101.42008584738367
+  },
+  {
+    "store": "40004 - Kedungdoro - SBY",
+    "address": "Jl. Kedung Doro No.62 - 64, Sawahan, Kec. Sawahan, Surabaya, Jawa Timur",
+    "postal_code": "60251",
+    "latitude": -7.264222879099025,
+    "longitude": 112.73035822522941
+  },
+  {
+    "store": "40006 - Wiyung - SBY",
+    "address": "Jl. Raya Menganti Babatan No.477, Babatan, Kec. Wiyung, Surabaya, Jawa Timur",
+    "postal_code": "60227",
+    "latitude": -7.3111370262312,
+    "longitude": 112.68030839639478
+  },
+  {
+    "store": "40012 - Jenggolo Sidoarjo - SDJ",
+    "address": "Jl. Jenggolo No.78 - 82, Pucang, Kec. Sidoarjo, Kabupaten Sidoarjo, Jawa Timur",
+    "postal_code": "61219",
+    "latitude": -7.4424606926999655,
+    "longitude": 112.71934730989021
+  },
+  {
+    "store": "40015 - Ahmad Yani - SBY",
+    "address": "Jl. Ahmad Yani No.270, Menanggal, Kec. Gayungan, Surabaya, Jawa Timur",
+    "postal_code": "60234",
+    "latitude": -7.341183269960645,
+    "longitude": 112.72884922523048
+  },
+  {
+    "store": "40018 - Kebon Sari Malang - MLG",
+    "address": "Jl. S. Supriadi No.2, Kebonsari, Kec. Sukun, Kota Malang, Jawa Timur",
+    "postal_code": "65149",
+    "latitude": -8.017300504321836,
+    "longitude": 112.6201538387327
+  },
+  {
+    "store": "40021 - Madiun - MDN",
+    "address": "Jl. S. Parman No.31, Oro-oro Ombo, Kec. Kartoharjo, Kota Madiun, Jawa Timur",
+    "postal_code": "63115",
+    "latitude": -7.622515743749131,
+    "longitude": 111.53403033872777
+  },
+  {
+    "store": "50000 - Gatot Subroto - DPS",
+    "address": "Jl. Gatot Subroto Barat No.405, Padangsambian Kaja, Kec. Denpasar Bar., Kota Denpasar, Bali ",
+    "postal_code": "80113",
+    "latitude": -8.636575068831595,
+    "longitude": 115.19099826306318
+  },
+  {
+    "store": "50001 - Bypass Ngurah Rai - DPS",
+    "address": "Jl. Bypass Ngurah Rai No.840-842, Pemogan, Denpasar Selatan, Kota Denpasar, Bali",
+    "postal_code": "80221",
+    "latitude": -8.720366786474816,
+    "longitude": 115.19544942524797
+  },
+  {
+    "store": "60000 - Tanjung Api Api - PLB",
+    "address": "Jl. Letjen Harun Sohar. 2605, Jl. Tj. Api-Api No.Km. 9, Kebun Bunga, Kec. Sukarami, Kota Palembang, Sumatera Selatan",
+    "postal_code": "30691",
+    "latitude": -2.918032832873319,
+    "longitude": 104.71238468285848
+  },
+  {
+    "store": "60003 - Jakabaring - PLB",
+    "address": "Jl. Gub H Bastari, 15 Ulu, Kecamatan Seberang Ulu I, Kota Palembang, Sumatera Selatan",
+    "postal_code": "30251",
+    "latitude": -3.0208289272987012,
+    "longitude": 104.7841944233409
+  },
+  {
+    "store": "60005 - JBC - JMB",
+    "address": "Jl. Kapten Pattimura, Simpang III Sipin, Kec. Kota Baru, Kota Jambi, Jambi",
+    "postal_code": "36361",
+    "latitude": -1.6201314774304907,
+    "longitude": 103.58830032517909
+  },
+  {
+    "store": "70004 - Antasari - LMP",
+    "address": "Jl. P. Antasari No.8, Kalibalau Kencana, Kec. Kedamaian, Kota Bandar Lampung, Lampung ",
+    "postal_code": "35131",
+    "latitude": -5.400098319932556,
+    "longitude": 105.28586841171533
+  },
+  {
+    "store": "70006 - Rajabasa - LMP",
+    "address": "Jl. ZA. Pagar Alam No.5, Rajabasa, Kec. Rajabasa, Kota Bandar Lampung, Lampung ",
+    "postal_code": "35114",
+    "latitude": -5.365851921842367,
+    "longitude": 105.22936588287953
+  },
+  {
+    "store": "80000 - Jogja - JGJ",
+    "address": "Jl. Ringroad Utara No. 11, Gondangan, Ringinsari, Maguwoharjo, Kec. Depok, Kabupaten Sleman, Daerah Istimewa Yogyakarta",
+    "postal_code": "55281",
+    "latitude": -7.773575980523471,
+    "longitude": 110.43106800989422
+  },
+  {
+    "store": "80002 - Solo Baru - SLO",
+    "address": "Jl. Sidoluhur No.6, Ngruki, Cemani, Kec. Grogol, Kabupaten Sukoharjo, Jawa Tengah",
+    "postal_code": "57552",
+    "latitude": -7.589294648416611,
+    "longitude": 110.81731950989209
+  },
+  {
+    "store": "80004 - Semarang - SMG",
+    "address": "Jl. Soekarno Hatta No.299, Kalicari, Kec. Pedurungan, Kota Semarang, Jawa Tengah",
+    "postal_code": "50198",
+    "latitude": -6.987126899719247,
+    "longitude": 110.45542206940321
+  },
+  {
+    "store": "80006 - Tegal - TGL",
+    "address": "Jl. Kapten Sudibyo No.174, Debong Lor, Kec. Tegal Bar., Kota Tegal, Jawa Tengah",
+    "postal_code": "52133",
+    "latitude": -6.8787205350444935,
+    "longitude": 109.12619328289585
+  },
+  {
+    "store": "80008 - Purwokerto - PWT",
+    "address": "Jl. Suparjo Rustam, Pesuruhan, Sokaraja Kulon, Kec. Sokaraja, Kabupaten Banyumas, Jawa Tengah",
+    "postal_code": "53146",
+    "latitude": -7.44198738484586,
+    "longitude": 109.27099832338403
+  },
+  {
+    "store": "90000 - Sunan Gunung Jati - CRB",
+    "address": "Jl. Sunan Gn. Jati No.882, Klayan, Gunung Jati, Kabupaten Cirebon, Jawa Barat",
+    "postal_code": "45151",
+    "latitude": -6.695846892373598,
+    "longitude": 108.55131105405826
+  },
+  {
+    "store": "90002 - Tenth Avenue - Bandung",
+    "address": "Jl. Soekarno-Hatta No.526, Cijaura, Kec. Buahbatu, Kota Bandung, Jawa Barat",
+    "postal_code": "40286",
+    "latitude": -6.94675864264445,
+    "longitude": 107.64083906940269
+  },
+  {
+    "store": "90003 - Tasikmalaya - TSM",
+    "address": "Jl. Gubernur Sewaka, Mangkubumi, Kec. Mangkubumi, Kab. Tasikmalaya, Jawa Barat",
+    "postal_code": "46181",
+    "latitude": -7.344082243614977,
+    "longitude": 108.196393309889
+  },
+  {
+    "store": "90004 - Garut - GRT",
+    "address": "Jl. Ahmad Yani Timur No.429-433, Suci, Kec. Karangpawitan, Kabupaten Garut, Jawa Barat",
+    "postal_code": "44182",
+    "latitude": -7.215389222409238,
+    "longitude": 107.92131901173501
+  }
+]
