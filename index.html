@@ -5,155 +5,62 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Mapping Rute Pengiriman</title>
   <style>
+    :root {
+      --primary: #6366f1;
+      --primary-dark: #4f46e5;
+      --primary-light: #818cf8;
+      --secondary: #10b981;
+      --accent: #f59e0b;
+      --danger: #ef4444;
+      --success: #10b981;
+      --warning: #f59e0b;
+      --info: #3b82f6;
+      --gradient-primary: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      --gradient-secondary: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+      --gradient-success: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+      --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+      --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+      --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+      --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+    }
+    
     body { 
       font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; 
       margin: 0; 
-      background: #f8fafc;
+      background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+      background-attachment: fixed;
       color: #1e293b;
       line-height: 1.6;
     }
     header { 
       padding: 20px 24px; 
-      border-bottom: 1px solid #e2e8f0; 
-      background: #fff;
-      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+      border-bottom: none;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      box-shadow: var(--shadow-lg);
       position: relative;
       z-index: 1000;
+    }
+    header::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, rgba(255,255,255,0.3) 0%, rgba(255,255,255,0.1) 100%);
     }
     .header-content {
       display: flex;
       align-items: center;
       gap: 16px;
     }
-    .menu-toggle {
-      display: flex;
-      flex-direction: column;
-      justify-content: space-around;
-      width: 30px;
-      height: 30px;
-      background: transparent;
-      border: none;
-      cursor: pointer;
-      padding: 0;
-    }
-    .menu-toggle span {
-      width: 100%;
-      height: 3px;
-      background: #1e293b;
-      border-radius: 2px;
-      transition: all 0.3s ease;
-    }
-    .menu-toggle.active span:nth-child(1) {
-      transform: rotate(45deg) translate(6px, 6px);
-    }
-    .menu-toggle.active span:nth-child(2) {
-      opacity: 0;
-    }
-    .menu-toggle.active span:nth-child(3) {
-      transform: rotate(-45deg) translate(6px, -6px);
-    }
     h1 { 
       margin: 0; 
       font-size: 24px; 
       font-weight: 700;
-      color: #1e293b;
+      color: #fff;
       letter-spacing: -0.025em;
-    }
-    
-    /* Sidenav Styles */
-    .sidenav {
-      position: fixed;
-      top: 0;
-      left: -300px;
-      width: 300px;
-      height: 100vh;
-      background: #fff;
-      box-shadow: 2px 0 10px rgba(0,0,0,0.1);
-      transition: left 0.3s ease;
-      z-index: 1001;
-      overflow-y: auto;
-    }
-    .sidenav.open {
-      left: 0;
-    }
-    .sidenav-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 20px 24px;
-      border-bottom: 1px solid #e2e8f0;
-      background: #f8fafc;
-    }
-    .sidenav-header h3 {
-      margin: 0;
-      font-size: 18px;
-      font-weight: 700;
-      color: #1e293b;
-    }
-    .close-sidenav {
-      background: none;
-      border: none;
-      font-size: 24px;
-      cursor: pointer;
-      color: #64748b;
-      padding: 0;
-      width: 30px;
-      height: 30px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-    .close-sidenav:hover {
-      color: #1e293b;
-    }
-    .sidenav-content {
-      padding: 20px 0;
-    }
-    .nav-item {
-      display: flex;
-      align-items: center;
-      padding: 16px 24px;
-      cursor: pointer;
-      transition: all 0.2s ease;
-      border-left: 3px solid transparent;
-    }
-    .nav-item:hover {
-      background: #f1f5f9;
-    }
-    .nav-item.active {
-      background: #eff6ff;
-      border-left-color: #3b82f6;
-    }
-    .nav-icon {
-      font-size: 20px;
-      margin-right: 12px;
-      width: 24px;
-      text-align: center;
-    }
-    .nav-text {
-      font-size: 14px;
-      font-weight: 500;
-      color: #374151;
-    }
-    .nav-item.active .nav-text {
-      color: #1e40af;
-      font-weight: 600;
-    }
-    .sidenav-overlay {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(0,0,0,0.5);
-      z-index: 1000;
-      opacity: 0;
-      visibility: hidden;
-      transition: all 0.3s ease;
-    }
-    .sidenav-overlay.show {
-      opacity: 1;
-      visibility: visible;
+      text-shadow: 0 2px 4px rgba(0,0,0,0.1);
     }
     
     /* Modal Styles */
@@ -163,11 +70,13 @@
       left: 0;
       width: 100%;
       height: 100%;
-      background: rgba(0,0,0,0.5);
+      background: rgba(0,0,0,0.6);
+      -webkit-backdrop-filter: blur(4px);
+      backdrop-filter: blur(4px);
       z-index: 2000;
       opacity: 0;
       visibility: hidden;
-      transition: all 0.3s ease;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     }
     .modal.show {
       opacity: 1;
@@ -177,74 +86,113 @@
       position: absolute;
       top: 50%;
       left: 50%;
-      transform: translate(-50%, -50%);
+      transform: translate(-50%, -50%) scale(0.95);
       background: #fff;
-      border-radius: 16px;
-      box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1), 0 10px 10px -5px rgba(0,0,0,0.04);
+      border-radius: 24px;
+      box-shadow: var(--shadow-xl);
       width: 90%;
       max-width: 1000px;
       max-height: 90vh;
       overflow: hidden;
+      transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .modal.show .modal-content {
+      transform: translate(-50%, -50%) scale(1);
     }
     .modal-header {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding: 24px;
-      border-bottom: 1px solid #e2e8f0;
-      background: #f8fafc;
+      padding: 28px 32px;
+      border-bottom: 2px solid #e2e8f0;
+      background: var(--gradient-primary);
+      position: relative;
+    }
+    .modal-header::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 2px;
+      background: linear-gradient(90deg, rgba(255,255,255,0.3) 0%, rgba(255,255,255,0.1) 100%);
     }
     .modal-header h2 {
       margin: 0;
-      font-size: 20px;
+      font-size: 22px;
       font-weight: 700;
-      color: #1e293b;
+      color: #fff;
+      text-shadow: 0 2px 4px rgba(0,0,0,0.1);
     }
     .close-modal {
-      background: none;
+      background: rgba(255, 255, 255, 0.2);
       border: none;
       font-size: 24px;
       cursor: pointer;
-      color: #64748b;
-      padding: 0;
-      width: 30px;
-      height: 30px;
+      color: #fff;
+      padding: 6px;
+      width: 36px;
+      height: 36px;
       display: flex;
       align-items: center;
       justify-content: center;
-      border-radius: 6px;
+      border-radius: 8px;
+      transition: all 0.2s ease;
     }
     .close-modal:hover {
-      background: #e2e8f0;
-      color: #1e293b;
+      background: rgba(255, 255, 255, 0.3);
+      transform: rotate(90deg);
     }
     .modal-body {
-      padding: 24px;
+      padding: 32px;
       max-height: 60vh;
       overflow-y: auto;
+      background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
     }
     .modal-tabs {
       display: flex;
-      border-bottom: 1px solid #e2e8f0;
-      margin-bottom: 20px;
+      border-bottom: 2px solid #e2e8f0;
+      margin-bottom: 24px;
+      background: linear-gradient(135deg, #f8fafc 0%, #ffffff 100%);
+      border-radius: 12px 12px 0 0;
+      padding: 4px 4px 0 4px;
     }
     .tab-btn {
-      background: none;
+      background: transparent;
       border: none;
-      padding: 12px 20px;
+      padding: 14px 24px;
       cursor: pointer;
       font-size: 14px;
       font-weight: 500;
       color: #64748b;
-      border-bottom: 2px solid transparent;
-      transition: all 0.2s ease;
+      border-bottom: 3px solid transparent;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      position: relative;
+      border-radius: 12px 12px 0 0;
+    }
+    .tab-btn::after {
+      content: '';
+      position: absolute;
+      bottom: -2px;
+      left: 50%;
+      transform: translateX(-50%) scaleX(0);
+      width: 80%;
+      height: 3px;
+      background: var(--gradient-primary);
+      border-radius: 2px 2px 0 0;
+      transition: transform 0.3s ease;
     }
     .tab-btn.active {
-      color: #3b82f6;
-      border-bottom-color: #3b82f6;
+      color: var(--primary-dark);
+      font-weight: 600;
+      background: rgba(99, 102, 241, 0.05);
+    }
+    .tab-btn.active::after {
+      transform: translateX(-50%) scaleX(1);
     }
     .tab-btn:hover {
-      color: #1e40af;
+      color: var(--primary);
+      background: rgba(99, 102, 241, 0.05);
     }
     .tab-content {
       margin-bottom: 20px;
@@ -259,100 +207,137 @@
       width: 100%;
       border-collapse: collapse;
       font-size: 14px;
+      background: #fff;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: var(--shadow-sm);
     }
     .modal-table th {
-      background: #f8fafc;
-      color: #374151;
+      background: var(--gradient-primary);
+      color: #fff;
       font-weight: 600;
       text-align: left;
-      padding: 12px;
-      border-bottom: 1px solid #e2e8f0;
+      padding: 16px;
+      border-bottom: 2px solid rgba(255,255,255,0.2);
+      text-shadow: 0 1px 2px rgba(0,0,0,0.1);
     }
     .modal-table td {
-      padding: 12px;
+      padding: 14px 16px;
       border-bottom: 1px solid #f1f5f9;
+      color: #475569;
+    }
+    .modal-table tbody tr {
+      transition: all 0.2s ease;
     }
     .modal-table tbody tr:hover {
-      background: #f8fafc;
+      background: linear-gradient(90deg, rgba(99, 102, 241, 0.05) 0%, rgba(99, 102, 241, 0.02) 100%);
+      transform: scale(1.01);
     }
     .modal-table tfoot td {
       font-weight: 600;
-      background: #f8fafc;
+      background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
       border-top: 2px solid #e2e8f0;
+      color: var(--primary-dark);
     }
     .modal-actions {
       display: flex;
       gap: 12px;
       justify-content: center;
-      padding-top: 20px;
-      border-top: 1px solid #e2e8f0;
+      padding-top: 24px;
+      border-top: 2px solid #e2e8f0;
+      margin-top: 24px;
     }
     .download-btn {
-      background: #3b82f6;
+      background: var(--gradient-primary);
       color: #fff;
       border: none;
-      border-radius: 8px;
-      padding: 12px 20px;
+      border-radius: 12px;
+      padding: 14px 24px;
       cursor: pointer;
       font-size: 14px;
-      font-weight: 500;
-      transition: all 0.2s ease;
+      font-weight: 600;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      box-shadow: var(--shadow-md);
     }
     .download-btn:hover {
-      background: #2563eb;
-      transform: translateY(-1px);
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-lg);
     }
     .download-btn.secondary {
-      background: #f8fafc;
+      background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
       color: #475569;
-      border: 1px solid #e2e8f0;
+      border: 2px solid #e2e8f0;
     }
     .download-btn.secondary:hover {
-      background: #f1f5f9;
+      background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%);
+      border-color: var(--primary-light);
+      color: var(--primary-dark);
     }
     
     /* Action buttons dalam modal */
     .modal-table .action-buttons {
       display: flex;
-      gap: 4px;
+      gap: 6px;
       justify-content: center;
     }
     .modal-table .action-buttons button {
-      padding: 6px 8px;
+      padding: 8px 12px;
       font-size: 12px;
       height: auto;
-      min-width: 32px;
-      border-radius: 6px;
-      background: #f8fafc;
+      min-width: 36px;
+      border-radius: 8px;
+      background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
       color: #475569;
-      border: 1px solid #e2e8f0;
+      border: 2px solid #e2e8f0;
+      transition: all 0.2s ease;
+      box-shadow: var(--shadow-sm);
     }
     .modal-table .action-buttons button:hover {
-      background: #e2e8f0;
-      border-color: #cbd5e1;
+      background: linear-gradient(135deg, #e2e8f0 0%, #cbd5e1 100%);
+      border-color: var(--primary-light);
+      color: var(--primary-dark);
+      transform: translateY(-1px);
+      box-shadow: var(--shadow-md);
     }
     .modal-table .action-buttons button:disabled {
       opacity: 0.5;
       cursor: not-allowed;
+      transform: none;
     }
     
     main { 
       display: grid; 
       grid-template-columns: 360px 1fr; 
       grid-template-rows: auto 1fr;
-      gap: 20px; 
-      padding: 20px; 
+      gap: 24px; 
+      padding: 24px; 
       max-width: 1400px;
       margin: 0 auto;
       min-height: calc(100vh - 80px);
     }
     .panel { 
       background: #fff;
-      border: 1px solid #e2e8f0; 
-      border-radius: 16px; 
-      padding: 24px; 
-      box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
+      border: none;
+      border-radius: 20px; 
+      padding: 28px; 
+      box-shadow: var(--shadow-xl);
       height: fit-content;
+      position: relative;
+      overflow: hidden;
+      transition: all 0.3s ease;
+    }
+    .panel::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: var(--gradient-primary);
+    }
+    .panel:hover {
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.15);
+      transform: translateY(-2px);
     }
     .row { 
       display: grid; 
@@ -363,23 +348,38 @@
     label { 
       font-size: 14px; 
       font-weight: 600;
-      color: #374151; 
-      margin-bottom: 4px;
+      color: #475569; 
+      margin-bottom: 6px;
+      display: block;
     }
     input[type="text"], input[type="number"], select { 
       width: 100%; 
       box-sizing: border-box; 
-      padding: 12px 16px; 
-      border: 2px solid #e5e7eb; 
+      padding: 14px 18px; 
+      border: 2px solid #e2e8f0; 
       border-radius: 12px; 
       font-size: 14px;
-      transition: all 0.2s ease;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
       background: #fff;
+      color: #1e293b;
+    }
+    input[type="text"]:hover, input[type="number"]:hover, select:hover {
+      border-color: var(--primary-light);
     }
     input[type="text"]:focus, input[type="number"]:focus, select:focus {
       outline: none;
-      border-color: #3b82f6;
-      box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+      border-color: var(--primary);
+      box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.1);
+      transform: translateY(-1px);
+    }
+    input[type="number"] {
+      -moz-appearance: textfield;
+      appearance: textfield;
+    }
+    input[type="number"]::-webkit-outer-spin-button,
+    input[type="number"]::-webkit-inner-spin-button {
+      -webkit-appearance: none;
+      margin: 0;
     }
     input[type="text"]:disabled {
       background-color: #f8fafc !important;
@@ -406,51 +406,91 @@
     button { 
       appearance: none; 
       border: none; 
-      background: #3b82f6; 
+      background: var(--gradient-primary); 
       color: #fff; 
       border-radius: 12px; 
-      padding: 12px 20px; 
+      padding: 14px 24px; 
       cursor: pointer; 
       font-size: 14px;
       font-weight: 600;
-      transition: all 0.2s ease;
-      box-shadow: 0 2px 4px rgba(59, 130, 246, 0.2);
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      box-shadow: var(--shadow-md);
+      position: relative;
+      overflow: hidden;
+    }
+    button::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+      transition: left 0.5s;
+    }
+    button:hover::before {
+      left: 100%;
     }
     button:hover {
-      background: #2563eb;
-      transform: translateY(-1px);
-      box-shadow: 0 4px 8px rgba(59, 130, 246, 0.3);
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-lg);
+    }
+    button:active {
+      transform: translateY(0);
+      box-shadow: var(--shadow-sm);
     }
     button.secondary { 
-      background: #f8fafc; 
+      background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%); 
       color: #475569; 
       border: 2px solid #e2e8f0;
       box-shadow: 0 1px 2px rgba(0,0,0,0.05);
     }
     button.secondary:hover {
-      background: #f1f5f9;
-      border-color: #cbd5e1;
+      background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%);
+      border-color: var(--primary-light);
+      color: var(--primary-dark);
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-md);
     }
     button.ghost { 
       background: transparent; 
-      color: #3b82f6; 
+      color: var(--primary); 
       box-shadow: none;
     }
     button.ghost:hover {
-      background: #eff6ff;
+      background: rgba(99, 102, 241, 0.1);
+      color: var(--primary-dark);
+    }
+    button.danger {
+      background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+    }
+    button.danger:hover {
+      background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
+    }
+    button.success {
+      background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+    }
+    button.success:hover {
+      background: linear-gradient(135deg, #059669 0%, #047857 100%);
     }
     button:disabled { 
       opacity: 0.5; 
       cursor: not-allowed; 
       transform: none;
+      background: #cbd5e1;
+    }
+    button:disabled:hover {
+      transform: none;
+      box-shadow: var(--shadow-md);
     }
     #map { 
       width: 100%; 
       height: 100%; 
       min-height: 500px;
-      border: 1px solid #eee; 
-      border-radius: 12px; 
-      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      border: none; 
+      border-radius: 20px; 
+      box-shadow: var(--shadow-xl);
+      overflow: hidden;
     }
     main > section:last-child {
       grid-column: 2;
@@ -458,44 +498,214 @@
     }
     .customers { display: flex; flex-direction: column; gap: 16px; }
     .customer-item { 
-      background: #f8fafc;
+      background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
       border: 2px solid #e2e8f0; 
-      border-radius: 12px; 
+      border-radius: 16px; 
       padding: 20px; 
-      transition: all 0.2s ease;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      position: relative;
+      overflow: hidden;
+    }
+    .customer-item::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 4px;
+      height: 100%;
+      background: var(--gradient-primary);
+      transform: scaleY(0);
+      transition: transform 0.3s ease;
     }
     .customer-item:hover {
-      border-color: #cbd5e1;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+      border-color: var(--primary-light);
+      box-shadow: var(--shadow-lg);
+      transform: translateY(-2px);
+    }
+    .customer-item:hover::before {
+      transform: scaleY(1);
     }
     .flex { display: flex; gap: 8px; }
     .flex > * { flex: 1; }
-    .results { margin-top: 10px; }
-    table { width: 100%; border-collapse: collapse; font-size: 13px; }
-    th, td { text-align: left; padding: 6px 8px; border-bottom: 1px solid #eee; }
-    tfoot td { font-weight: 600; }
+    .results { margin-top: 16px; }
+    table { 
+      width: 100%; 
+      border-collapse: collapse; 
+      font-size: 13px;
+      background: #fff;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: var(--shadow-sm);
+    }
+    th { 
+      text-align: left; 
+      padding: 12px 14px; 
+      border-bottom: 2px solid #e2e8f0;
+      background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+      font-weight: 600;
+      color: #475569;
+    }
+    td { 
+      text-align: left; 
+      padding: 10px 14px; 
+      border-bottom: 1px solid #f1f5f9;
+      color: #64748b;
+    }
+    tbody tr {
+      transition: all 0.2s ease;
+    }
+    tbody tr:hover {
+      background: rgba(99, 102, 241, 0.02);
+    }
+    tfoot td { 
+      font-weight: 600; 
+      background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+      border-top: 2px solid #e2e8f0;
+      color: var(--primary-dark);
+    }
     .error { 
       color: #dc2626; 
       font-size: 13px; 
       margin-top: 8px; 
-      padding: 12px 16px;
-      background: #fef2f2;
-      border: 1px solid #fecaca;
-      border-radius: 8px;
+      padding: 14px 18px;
+      background: linear-gradient(135deg, #fef2f2 0%, #fee2e2 100%);
+      border: 2px solid #fecaca;
+      border-left: 4px solid #ef4444;
+      border-radius: 12px;
       font-weight: 500;
+      box-shadow: var(--shadow-sm);
+    }
+    .error.success {
+      color: #059669;
+      background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%);
+      border: 2px solid #86efac;
+      border-left: 4px solid #10b981;
     }
     .drop-list { margin-top: 10px; border-top: 1px solid #eee; padding-top: 8px; }
-    .drop-item { display: grid; grid-template-columns: 28px 1fr auto; gap: 8px; align-items: center; padding: 6px 0; border-bottom: 1px dashed #eee; }
-    .chip { display: inline-block; padding: 2px 8px; border-radius: 999px; font-size: 12px; color: #fff; }
-    .controls button { padding: 4px 8px; font-size: 12px; }
-    .legend { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 6px; }
-    .legend-item { display: inline-flex; align-items: center; gap: 6px; font-size: 12px; }
-    .legend-swatch { width: 14px; height: 4px; border-radius: 2px; }
+    .drop-item { 
+      display: grid; 
+      grid-template-columns: 28px 1fr auto; 
+      gap: 8px; 
+      align-items: center; 
+      padding: 10px 0; 
+      border-bottom: 1px dashed #e2e8f0;
+      transition: all 0.2s ease;
+    }
+    .drop-item:hover {
+      background: rgba(99, 102, 241, 0.02);
+      border-radius: 8px;
+      padding-left: 8px;
+      padding-right: 8px;
+    }
+    .chip { 
+      display: inline-block; 
+      padding: 4px 12px; 
+      border-radius: 12px; 
+      font-size: 11px; 
+      font-weight: 600;
+      color: #fff; 
+      box-shadow: var(--shadow-sm);
+      background: var(--gradient-primary);
+    }
+    .controls button { 
+      padding: 6px 12px; 
+      font-size: 12px;
+      border-radius: 8px;
+    }
+    .legend { 
+      display: flex; 
+      flex-wrap: wrap; 
+      gap: 12px; 
+      margin-top: 12px;
+      padding: 12px;
+      background: linear-gradient(135deg, #f8fafc 0%, #ffffff 100%);
+      border-radius: 12px;
+      border: 1px solid #e2e8f0;
+    }
+    .legend-item { 
+      display: inline-flex; 
+      align-items: center; 
+      gap: 8px; 
+      font-size: 12px;
+      font-weight: 500;
+      color: #475569;
+    }
+    .legend-swatch { 
+      width: 16px; 
+      height: 16px; 
+      border-radius: 4px;
+      box-shadow: var(--shadow-sm);
+    }
     .results-title { margin: 8px 0; font-size: 14px; }
     .table-container { overflow-x: auto; }
     .muted-note { margin-top: 8px; }
     .hidden { display: none; }
     .inline-between { justify-content: space-between; }
+    .add-customer-btn-container {
+      margin-top: 12px;
+    }
+    .upload-actions {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+    }
+    .file-input-hidden {
+      display: none;
+    }
+    
+    /* Tab switcher styles untuk form panel */
+    .form-tabs {
+      display: flex;
+      border-bottom: 2px solid #e2e8f0;
+      margin-bottom: 24px;
+      gap: 0;
+      background: linear-gradient(135deg, #f8fafc 0%, #ffffff 100%);
+      border-radius: 12px 12px 0 0;
+      padding: 4px 4px 0 4px;
+    }
+    .form-tab-btn {
+      background: transparent;
+      border: none;
+      padding: 14px 24px;
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: 500;
+      color: #64748b;
+      border-bottom: 3px solid transparent;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      position: relative;
+      border-radius: 12px 12px 0 0;
+    }
+    .form-tab-btn::after {
+      content: '';
+      position: absolute;
+      bottom: -2px;
+      left: 50%;
+      transform: translateX(-50%) scaleX(0);
+      width: 80%;
+      height: 3px;
+      background: var(--gradient-primary);
+      border-radius: 2px 2px 0 0;
+      transition: transform 0.3s ease;
+    }
+    .form-tab-btn.active {
+      color: var(--primary-dark);
+      font-weight: 600;
+      background: rgba(99, 102, 241, 0.05);
+    }
+    .form-tab-btn.active::after {
+      transform: translateX(-50%) scaleX(1);
+    }
+    .form-tab-btn:hover {
+      color: var(--primary);
+      background: rgba(99, 102, 241, 0.05);
+    }
+    .form-tab-content {
+      display: none;
+    }
+    .form-tab-content.active {
+      display: block;
+    }
     
     /* Download buttons styles */
     .download-buttons {
@@ -532,17 +742,6 @@
         grid-column: 1;
         grid-row: 1 / -1;
       }
-      /* Sidenav untuk desktop */
-      .sidenav {
-        width: 320px;
-        box-shadow: 2px 0 15px rgba(0,0,0,0.1);
-      }
-      .sidenav.open ~ main {
-        margin-left: 320px;
-      }
-      .sidenav-overlay {
-        display: none; /* Tidak perlu overlay di desktop */
-      }
       /* Modal untuk desktop */
       .modal-content {
         max-width: 1200px;
@@ -559,23 +758,10 @@
 
     /* Tablet Responsive Styles */
     @media (max-width: 1023px) and (min-width: 769px) {
-      .menu-toggle {
-        display: flex;
-      }
-      .sidenav {
-        width: 300px;
-      }
-      .sidenav.open ~ main {
-        margin-left: 300px;
-      }
-      .sidenav-overlay {
-        display: none; /* Tidak perlu overlay di tablet */
-      }
       main {
         grid-template-columns: 1fr;
         grid-template-rows: auto 1fr;
         gap: 16px;
-        transition: margin-left 0.3s ease;
       }
       .panel {
         grid-column: 1;
@@ -595,15 +781,7 @@
     @media (max-width: 768px) {
       body { font-size: 14px; }
       header { padding: 8px 12px; }
-      .menu-toggle { display: flex; }
       h1 { font-size: 16px; }
-      .sidenav {
-        width: 280px;
-        left: -280px;
-      }
-      .sidenav-overlay {
-        display: block; /* Overlay diperlukan di mobile */
-      }
       .modal-content {
         width: 95%;
         max-height: 95vh;
@@ -868,43 +1046,9 @@
 <body>
   <header>
     <div class="header-content">
-      <button id="menuToggle" class="menu-toggle" title="Toggle Menu">
-        <span></span>
-        <span></span>
-        <span></span>
-      </button>
       <h1>Mapping Rute Pengiriman</h1>
     </div>
   </header>
-  
-  <!-- Sidenav -->
-  <nav id="sidenav" class="sidenav">
-    <div class="sidenav-header">
-      <h3>Menu</h3>
-      <button id="closeSidenav" class="close-sidenav">&times;</button>
-    </div>
-    <div class="sidenav-content">
-      <div class="nav-item active" data-section="mapping">
-        <span class="nav-icon">🗺️</span>
-        <span class="nav-text">Mapping Rute</span>
-      </div>
-      <div class="nav-item" data-section="history">
-        <span class="nav-icon">📋</span>
-        <span class="nav-text">Riwayat Rute</span>
-      </div>
-      <div class="nav-item" data-section="settings">
-        <span class="nav-icon">⚙️</span>
-        <span class="nav-text">Pengaturan</span>
-      </div>
-      <div class="nav-item" data-section="help">
-        <span class="nav-icon">❓</span>
-        <span class="nav-text">Bantuan</span>
-      </div>
-    </div>
-  </nav>
-  
-  <!-- Overlay untuk sidenav -->
-  <div id="sidenavOverlay" class="sidenav-overlay"></div>
   
   <!-- Modal untuk Ringkasan Rute -->
   <div id="routeModal" class="modal">
@@ -953,6 +1097,7 @@
                     <th>Nama Customer</th>
                     <th>No. Dokumen</th>
                     <th>Alamat</th>
+                    <th>Notes</th>
                     <th>Urutan</th>
                     <th>Action</th>
                   </tr>
@@ -995,12 +1140,49 @@
         <div class="muted">Pilih toko dari dropdown di atas untuk auto-fill, atau ketik manual jika tidak ada di database.</div>
       </div>
 
-      <div class="row">
-        <div class="inline inline-between">
-          <label>Daftar Customer</label>
-          <button id="addCustomerBtn" class="ghost">+ Tambah Customer</button>
+      <!-- Tab Switcher -->
+      <div class="form-tabs">
+        <button class="form-tab-btn active" data-form-tab="address">📍 Alamat Lengkap</button>
+        <button class="form-tab-btn" data-form-tab="coordinates">🌐 Koordinat (Lat/Lng)</button>
+      </div>
+
+      <!-- Tab Content: Alamat Lengkap -->
+      <div id="addressTab" class="form-tab-content active">
+        <div class="row">
+          <div class="inline inline-between">
+            <label>Daftar Customer</label>
+            <div class="upload-actions">
+              <button id="downloadTemplateAddressBtn" class="ghost" type="button" title="Download Template Excel">📥 Template Excel</button>
+              <button id="uploadAddressBtn" class="ghost" type="button">📤 Upload Excel</button>
+              <input type="file" id="uploadAddressFile" accept=".xlsx,.xls" class="file-input-hidden">
+            </div>
+          </div>
+          <div id="customers" class="customers"></div>
+          <div class="add-customer-btn-container">
+            <button id="addCustomerBtn" class="ghost">+ Tambah Customer</button>
+          </div>
         </div>
-        <div id="customers" class="customers"></div>
+      </div>
+
+      <!-- Tab Content: Koordinat (Lat/Lng) -->
+      <div id="coordinatesTab" class="form-tab-content">
+        <div class="row">
+          <div class="inline inline-between">
+            <label>Daftar Customer (Koordinat)</label>
+            <div class="upload-actions">
+              <button id="downloadTemplateCoordBtn" class="ghost" type="button" title="Download Template Excel">📥 Template Excel</button>
+              <button id="uploadCoordBtn" class="ghost" type="button">📤 Upload Excel</button>
+              <input type="file" id="uploadCoordFile" accept=".xlsx,.xls" class="file-input-hidden">
+            </div>
+          </div>
+          <div id="customersCoord" class="customers"></div>
+          <div class="add-customer-btn-container">
+            <button id="addCustomerCoordBtn" class="ghost">+ Tambah Customer</button>
+          </div>
+        </div>
+        <div class="muted muted-note">
+          Masukkan koordinat dalam format: Latitude, Longitude (contoh: -6.2088, 106.8456)
+        </div>
       </div>
 
       <div class="inline">
@@ -1049,6 +1231,7 @@
     let truckMarker = null; // Marker untuk animasi truk
     let animationInterval = null; // Interval untuk animasi
     let storeDatabase = []; // Menyimpan data toko dari JSON
+    let selectedStoreData = null; // Menyimpan data toko yang dipilih dari database (termasuk koordinat)
 
     const dom = {
       cityInput: () => document.getElementById('cityInput'),
@@ -1065,11 +1248,6 @@
       downloadPdfBtn: () => document.getElementById('downloadPdfBtn'),
       downloadXlsxBtn: () => document.getElementById('downloadXlsxBtn'),
       downloadImgBtn: () => document.getElementById('downloadImgBtn'),
-      // Sidenav elements
-      menuToggle: () => document.getElementById('menuToggle'),
-      sidenav: () => document.getElementById('sidenav'),
-      closeSidenav: () => document.getElementById('closeSidenav'),
-      sidenavOverlay: () => document.getElementById('sidenavOverlay'),
       // Modal elements
       routeModal: () => document.getElementById('routeModal'),
       closeModal: () => document.getElementById('closeModal'),
@@ -1085,35 +1263,6 @@
     };
 
     const ROUTE_COLORS = ['#1e88e5','#43a047','#f4511e','#8e24aa','#fb8c00','#3949ab','#00acc1','#6d4c41','#e53935','#7cb342'];
-
-    // Fungsi untuk mengontrol sidenav
-    function toggleSidenav() {
-      const sidenav = dom.sidenav();
-      const overlay = dom.sidenavOverlay();
-      const menuToggle = dom.menuToggle();
-      
-      sidenav.classList.toggle('open');
-      menuToggle.classList.toggle('active');
-      
-      // Hanya tampilkan overlay di mobile
-      if (window.innerWidth <= 768) {
-        overlay.classList.toggle('show');
-      }
-    }
-
-    function closeSidenav() {
-      const sidenav = dom.sidenav();
-      const overlay = dom.sidenavOverlay();
-      const menuToggle = dom.menuToggle();
-      
-      sidenav.classList.remove('open');
-      menuToggle.classList.remove('active');
-      
-      // Hanya sembunyikan overlay di mobile
-      if (window.innerWidth <= 768) {
-        overlay.classList.remove('show');
-      }
-    }
 
     // Fungsi untuk mengontrol modal
     function openModal() {
@@ -1174,6 +1323,7 @@
           <td>${drop.name}</td>
           <td>${drop.docNo}</td>
           <td>${drop.address}</td>
+          <td>${drop.notes || '-'}</td>
           <td>Drop ${index + 1}</td>
           <td>
             <div class="action-buttons">
@@ -1224,12 +1374,17 @@
     // Fungsi untuk re-render route dari modal
     async function rerenderWithOrderFromModal(reorderedDrops, newOrder) {
       try {
-        const storeResolved = await getPlaceOrGeocode(dom.storeAddress(), storeAutocomplete);
+        const storeResolved = await getStoreOrigin();
         const origin = storeResolved.location;
         
         // Buat waypoints dari drop points yang sudah di-reorder
         const waypoints = reorderedDrops.map(drop => {
-          // Cari koordinat dari data rute yang ada
+          // Jika ada koordinat asli (dari tab koordinat), gunakan itu
+          if (drop.latitude !== undefined && drop.longitude !== undefined) {
+            const location = new google.maps.LatLng(drop.latitude, drop.longitude);
+            return { location: location, stopover: true };
+          }
+          // Jika tidak ada koordinat, cari dari data rute yang ada
           const leg = currentRouteData.legs.find(l => 
             l.end_address.includes(drop.name) || 
             l.end_address.includes(drop.docNo)
@@ -1264,8 +1419,55 @@
         currentRouteData.totalDistance = formatDistance(totalMeters);
         currentRouteData.totalDuration = formatDuration(totalSeconds);
         
+        // Buat resolvedCustomers dari reorderedDrops dan legs yang baru
+        // Catatan: legs[0] = origin -> drop[0], legs[1] = drop[0] -> drop[1], dst
+        const resolvedCustomers = await Promise.all(reorderedDrops.map(async (drop, idx) => {
+          // Leg untuk drop point ini adalah leg[idx] (karena leg[0] adalah dari origin ke drop pertama)
+          const leg = response.routes[0].legs[idx];
+          // Waypoint untuk drop point ini
+          const waypoint = waypoints[idx];
+          
+          // Gunakan location dari waypoint (yang sudah menggunakan koordinat asli jika tersedia)
+          const location = waypoint && waypoint.location ? waypoint.location : (leg ? leg.end_location : null);
+          
+          // Jika ada koordinat asli, gunakan reverse geocoding untuk mendapatkan alamat yang sesuai
+          let formattedAddress = drop.address || 'Alamat tidak tersedia';
+          if (drop.latitude !== undefined && drop.longitude !== undefined && location) {
+            try {
+              // Reverse geocode untuk mendapatkan alamat dari koordinat asli
+              const geocodeResp = await new Promise((resolve, reject) => {
+                geocoder.geocode({ location: location }, (results, status) => {
+                  if (status === 'OK' && results[0]) {
+                    resolve(results[0]);
+                  } else {
+                    reject(new Error('Geocoding failed'));
+                  }
+                });
+              });
+              formattedAddress = geocodeResp.formatted_address;
+            } catch (error) {
+              // Jika reverse geocoding gagal, gunakan alamat dari leg atau fallback
+              formattedAddress = (leg && leg.end_address) ? leg.end_address : drop.address;
+            }
+          } else {
+            // Jika tidak ada koordinat asli, gunakan alamat dari leg
+            formattedAddress = (leg && leg.end_address) ? leg.end_address : drop.address;
+          }
+          
+          return {
+            name: drop.name,
+            docNo: drop.docNo,
+            formatted: formattedAddress,
+            location: location,
+            notes: drop.notes || ''
+          };
+        }));
+        
+        // newOrder untuk renderRoute harus berupa array berurutan karena resolvedCustomers sudah sesuai urutan
+        const renderOrder = resolvedCustomers.map((_, idx) => idx);
+        
         // Re-render route di peta
-        renderRoute(response, { geometry: { location: origin }, formatted_address: storeResolved.formatted }, newOrder, reorderedDrops);
+        renderRoute(response, { geometry: { location: origin }, formatted_address: storeResolved.formatted }, renderOrder, resolvedCustomers);
         
         // Update modal dengan data baru
         populateModal();
@@ -1332,6 +1534,8 @@
       const selectedIndex = dom.storeSelect().value;
       if (selectedIndex === '') {
         // Reset ke mode manual input
+        selectedStoreData = null; // Reset selected store data
+        clearMarkers(); // Hapus marker toko
         dom.storeAddress().disabled = false;
         dom.storeAddress().placeholder = 'Ketik alamat atau paste URL Google Maps...';
         dom.storeAddress().style.backgroundColor = '#fff';
@@ -1341,6 +1545,15 @@
       
       const selectedStore = storeDatabase[selectedIndex];
       if (selectedStore) {
+        // Simpan data toko yang dipilih termasuk koordinat
+        selectedStoreData = {
+          store: selectedStore.store,
+          address: selectedStore.address,
+          latitude: selectedStore.latitude,
+          longitude: selectedStore.longitude,
+          postal_code: selectedStore.postal_code
+        };
+        
         // Auto-fill alamat toko dan buat read-only
         dom.storeAddress().value = selectedStore.address;
         dom.storeAddress().disabled = true;
@@ -1348,37 +1561,64 @@
         dom.storeAddress().style.backgroundColor = '#f8fafc';
         dom.storeAddress().style.cursor = 'not-allowed';
         
-        // Auto-fill kota dengan alamat lengkap
-        const city = extractCityFromAddress(selectedStore.address);
-        if (city) {
-          // Gunakan geocoding untuk mendapatkan alamat lengkap kota
-          geocoder.geocode({ 
-            address: city + ', Indonesia',
-            region: 'id'
-          }, (results, status) => {
-            if (status === 'OK' && results[0]) {
-              const fullCityPlace = results[0];
-              dom.cityInput().value = fullCityPlace.formatted_address;
-              
-              // Update cityPlace global variable
-              cityPlace = fullCityPlace;
-              
-              // Update bounds untuk autocomplete
-              if (fullCityPlace.geometry && fullCityPlace.geometry.viewport) {
-                map.fitBounds(fullCityPlace.geometry.viewport);
-                applyCityBiasToAutocompletes();
+        // Gunakan koordinat dari database untuk menampilkan marker dan mengatur viewport
+        if (selectedStore.latitude && selectedStore.longitude) {
+          const storeLocation = new google.maps.LatLng(selectedStore.latitude, selectedStore.longitude);
+          
+          // Update map viewport ke lokasi toko
+          map.setCenter(storeLocation);
+          map.setZoom(13);
+          
+          // Tampilkan marker toko di peta
+          clearMarkers(); // Hapus marker sebelumnya jika ada
+          placeMarker(storeLocation, 'Toko: ' + selectedStore.store + ' — ' + selectedStore.address);
+          
+          // Auto-fill kota dengan alamat lengkap
+          const city = extractCityFromAddress(selectedStore.address);
+          if (city) {
+            // Gunakan geocoding untuk mendapatkan alamat lengkap kota
+            geocoder.geocode({ 
+              address: city + ', Indonesia',
+              region: 'id'
+            }, (results, status) => {
+              if (status === 'OK' && results[0]) {
+                const fullCityPlace = results[0];
+                dom.cityInput().value = fullCityPlace.formatted_address;
+                
+                // Update cityPlace global variable
+                cityPlace = fullCityPlace;
+                
+                // Update bounds untuk autocomplete
+                if (fullCityPlace.geometry && fullCityPlace.geometry.viewport) {
+                  applyCityBiasToAutocompletes();
+                }
+              } else {
+                // Fallback ke nama kota saja jika geocoding gagal
+                dom.cityInput().value = city;
               }
-            } else {
-              // Fallback ke nama kota saja jika geocoding gagal
-              dom.cityInput().value = city;
-            }
-          });
-        }
-        
-        // Trigger store autocomplete untuk update bounds
-        if (storeAutocomplete) {
-          const event = new Event('input', { bubbles: true });
-          dom.storeAddress().dispatchEvent(event);
+            });
+          }
+        } else {
+          // Jika tidak ada koordinat di database, gunakan geocoding seperti sebelumnya
+          const city = extractCityFromAddress(selectedStore.address);
+          if (city) {
+            geocoder.geocode({ 
+              address: city + ', Indonesia',
+              region: 'id'
+            }, (results, status) => {
+              if (status === 'OK' && results[0]) {
+                const fullCityPlace = results[0];
+                dom.cityInput().value = fullCityPlace.formatted_address;
+                cityPlace = fullCityPlace;
+                if (fullCityPlace.geometry && fullCityPlace.geometry.viewport) {
+                  map.fitBounds(fullCityPlace.geometry.viewport);
+                  applyCityBiasToAutocompletes();
+                }
+              } else {
+                dom.cityInput().value = city;
+              }
+            });
+          }
         }
         
         // Update customer autocompletes dengan kota baru setelah geocoding selesai
@@ -1406,22 +1646,43 @@
     function showError(message) {
       const box = dom.errorBox();
       box.textContent = message;
-      box.classList.remove('hidden');
+      box.classList.remove('hidden', 'success');
+      box.classList.add('error');
+    }
+
+    function showSuccess(message) {
+      const box = dom.errorBox();
+      box.textContent = message;
+      box.classList.remove('hidden', 'error');
+      box.classList.add('success');
     }
 
     function clearError() {
       const box = dom.errorBox();
       box.textContent = '';
       box.classList.add('hidden');
+      box.classList.remove('error', 'success');
     }
 
-    function addCustomerItem(prefill = { name: '', docNo: '', address: '' }) {
+    // Fungsi untuk switch form tab
+    function switchFormTab(tabName) {
+      // Remove active class from all tabs and panes
+      document.querySelectorAll('.form-tab-btn').forEach(btn => btn.classList.remove('active'));
+      document.querySelectorAll('.form-tab-content').forEach(pane => pane.classList.remove('active'));
+      
+      // Add active class to selected tab and pane
+      document.querySelector(`[data-form-tab="${tabName}"]`).classList.add('active');
+      document.getElementById(`${tabName}Tab`).classList.add('active');
+    }
+
+    function addCustomerItem(prefill = { name: '', docNo: '', address: '', notes: '' }) {
       const wrapper = document.createElement('div');
       wrapper.className = 'customer-item';
 
       const nameId = 'custName-' + Math.random().toString(36).slice(2);
       const docId = 'custDoc-' + Math.random().toString(36).slice(2);
       const addrId = 'custAddr-' + Math.random().toString(36).slice(2);
+      const notesId = 'custNotes-' + Math.random().toString(36).slice(2);
 
       wrapper.innerHTML = `
         <div class=\"row\">
@@ -1436,12 +1697,18 @@
           <label for=\"${addrId}\">Alamat Customer</label>
           <input id=\"${addrId}\" type=\"text\" placeholder=\"Ketik alamat atau paste URL Google Maps...\" value=\"${prefill.address}\">
         </div>
+        <div class=\"row\">
+          <label for=\"${notesId}\">Notes</label>
+          <input id=\"${notesId}\" type=\"text\" placeholder=\"Catatan tambahan (opsional)\" value=\"${prefill.notes || ''}\">
+        </div>
         <div class=\"inline\" style=\"justify-content: flex-end;\">
           <button type=\"button\" class=\"secondary removeBtn\">Hapus</button>
         </div>
       `;
 
       const removeBtn = wrapper.querySelector('.removeBtn');
+      const addrInput = wrapper.querySelector('#' + addrId);
+      
       removeBtn.addEventListener('click', () => {
         const idx = customerAutocompletes.findIndex(x => x.input === addrInput);
         if (idx >= 0) customerAutocompletes.splice(idx, 1);
@@ -1450,7 +1717,6 @@
 
       dom.customers().appendChild(wrapper);
 
-      const addrInput = wrapper.querySelector('#' + addrId);
       const autocomplete = new google.maps.places.Autocomplete(addrInput, {
         fields: ['geometry', 'formatted_address', 'name', 'address_components'],
         types: ['geocode'],
@@ -1460,6 +1726,301 @@
         autocomplete.setOptions({ strictBounds: false });
       }
       customerAutocompletes.push(autocomplete);
+    }
+
+    // Fungsi untuk menambah customer dengan koordinat
+    function addCustomerItemCoord(prefill = { name: '', docNo: '', lat: '', lng: '', notes: '' }) {
+      const wrapper = document.createElement('div');
+      wrapper.className = 'customer-item';
+
+      const nameId = 'custCoordName-' + Math.random().toString(36).slice(2);
+      const docId = 'custCoordDoc-' + Math.random().toString(36).slice(2);
+      const latId = 'custCoordLat-' + Math.random().toString(36).slice(2);
+      const lngId = 'custCoordLng-' + Math.random().toString(36).slice(2);
+      const notesId = 'custCoordNotes-' + Math.random().toString(36).slice(2);
+
+      wrapper.innerHTML = `
+        <div class=\"row\">
+          <label for=\"${nameId}\">Nama Customer</label>
+          <input id=\"${nameId}\" type=\"text\" placeholder=\"Nama customer\" value=\"${prefill.name}\">
+        </div>
+        <div class=\"row\">
+          <label for=\"${docId}\">Nomor Dokumen</label>
+          <input id=\"${docId}\" type=\"text\" placeholder=\"Contoh: DO-2025-0001\" value=\"${prefill.docNo}\">
+        </div>
+        <div class=\"row\">
+          <label for=\"${latId}\">Latitude</label>
+          <input id=\"${latId}\" type=\"number\" step=\"any\" placeholder=\"-6.2088\" value=\"${prefill.lat}\">
+        </div>
+        <div class=\"row\">
+          <label for=\"${lngId}\">Longitude</label>
+          <input id=\"${lngId}\" type=\"number\" step=\"any\" placeholder=\"106.8456\" value=\"${prefill.lng}\">
+        </div>
+        <div class=\"row\">
+          <label for=\"${notesId}\">Notes</label>
+          <input id=\"${notesId}\" type=\"text\" placeholder=\"Catatan tambahan (opsional)\" value=\"${prefill.notes || ''}\">
+        </div>
+        <div class=\"inline\" style=\"justify-content: flex-end;\">
+          <button type=\"button\" class=\"secondary removeBtn\">Hapus</button>
+        </div>
+      `;
+
+      const removeBtn = wrapper.querySelector('.removeBtn');
+      removeBtn.addEventListener('click', () => {
+        wrapper.remove();
+      });
+
+      document.getElementById('customersCoord').appendChild(wrapper);
+    }
+
+    // Fungsi untuk download template Excel - Alamat Lengkap
+    function downloadTemplateAddress() {
+      const wb = XLSX.utils.book_new();
+      
+      // Header untuk template alamat lengkap
+      const templateData = [
+        ['Nama Customer', 'Nomor Dokumen', 'Alamat Customer', 'Notes'],
+        ['Contoh Customer 1', 'DO-2025-0001', 'Jl. Sudirman No.1, Jakarta Pusat', 'Catatan contoh 1'],
+        ['Contoh Customer 2', 'DO-2025-0002', 'Jl. Thamrin No.10, Jakarta Pusat', 'Catatan contoh 2'],
+      ];
+      
+      const ws = XLSX.utils.aoa_to_sheet(templateData);
+      
+      // Set column widths
+      ws['!cols'] = [
+        { wch: 25 },  // Nama Customer
+        { wch: 20 },  // Nomor Dokumen
+        { wch: 50 },  // Alamat Customer
+        { wch: 30 }   // Notes
+      ];
+      
+      // Style header row
+      const headerRange = XLSX.utils.decode_range(ws['!ref']);
+      for (let col = headerRange.s.c; col <= headerRange.e.c; col++) {
+        const headerCell = XLSX.utils.encode_cell({ r: 0, c: col });
+        if (!ws[headerCell]) ws[headerCell] = { t: 's', v: '' };
+        ws[headerCell].s = {
+          fill: { fgColor: { rgb: '667EEA' } },
+          font: { bold: true, color: { rgb: 'FFFFFF' } },
+          alignment: { horizontal: 'center', vertical: 'center' }
+        };
+      }
+      
+      XLSX.utils.book_append_sheet(wb, ws, 'Template Customer');
+      
+      // Download file
+      const fileName = `template-customer-alamat-${new Date().toISOString().split('T')[0]}.xlsx`;
+      XLSX.writeFile(wb, fileName);
+    }
+
+    // Fungsi untuk download template Excel - Koordinat
+    function downloadTemplateCoord() {
+      const wb = XLSX.utils.book_new();
+      
+      // Header untuk template koordinat
+      const templateData = [
+        ['Nama Customer', 'Nomor Dokumen', 'Latitude', 'Longitude', 'Notes'],
+        ['Contoh Customer 1', 'DO-2025-0001', -6.2088, 106.8456, 'Catatan contoh 1'],
+        ['Contoh Customer 2', 'DO-2025-0002', -6.1944, 106.8229, 'Catatan contoh 2'],
+      ];
+      
+      const ws = XLSX.utils.aoa_to_sheet(templateData);
+      
+      // Set column widths
+      ws['!cols'] = [
+        { wch: 25 },  // Nama Customer
+        { wch: 20 },  // Nomor Dokumen
+        { wch: 15 },  // Latitude
+        { wch: 15 },  // Longitude
+        { wch: 30 }   // Notes
+      ];
+      
+      // Style header row
+      const headerRange = XLSX.utils.decode_range(ws['!ref']);
+      for (let col = headerRange.s.c; col <= headerRange.e.c; col++) {
+        const headerCell = XLSX.utils.encode_cell({ r: 0, c: col });
+        if (!ws[headerCell]) ws[headerCell] = { t: 's', v: '' };
+        ws[headerCell].s = {
+          fill: { fgColor: { rgb: '667EEA' } },
+          font: { bold: true, color: { rgb: 'FFFFFF' } },
+          alignment: { horizontal: 'center', vertical: 'center' }
+        };
+      }
+      
+      XLSX.utils.book_append_sheet(wb, ws, 'Template Customer');
+      
+      // Download file
+      const fileName = `template-customer-koordinat-${new Date().toISOString().split('T')[0]}.xlsx`;
+      XLSX.writeFile(wb, fileName);
+    }
+
+    // Fungsi untuk membaca dan memproses file Excel - Alamat Lengkap
+    async function processUploadedAddressFile(file) {
+      try {
+        const data = await file.arrayBuffer();
+        const workbook = XLSX.read(data, { type: 'array' });
+        const firstSheet = workbook.Sheets[workbook.SheetNames[0]];
+        
+        // Gunakan defval untuk menangani sel kosong
+        const jsonData = XLSX.utils.sheet_to_json(firstSheet, { 
+          header: 1, 
+          defval: '',
+          blankrows: false 
+        });
+        
+        console.log('Excel data read:', jsonData);
+        
+        if (!jsonData || jsonData.length < 2) {
+          showError('File Excel kosong atau tidak valid. Pastikan ada header dan minimal 1 baris data.');
+          return;
+        }
+        
+        // Skip header row (baris pertama)
+        const rows = jsonData.slice(1);
+        
+        // Clear existing customers
+        dom.customers().innerHTML = '';
+        customerAutocompletes = [];
+        
+        // Process each row
+        let successCount = 0;
+        let errorCount = 0;
+        
+        for (let i = 0; i < rows.length; i++) {
+          const row = rows[i];
+          
+          // Skip baris kosong atau baris yang semua selnya kosong
+          if (!row || row.length === 0) {
+            continue;
+          }
+          
+          // Pastikan array memiliki minimal 3 elemen (notes opsional)
+          while (row.length < 3) {
+            row.push('');
+          }
+          
+          const name = String(row[0] || '').trim();
+          const docNo = String(row[1] || '').trim();
+          const address = String(row[2] || '').trim();
+          const notes = String(row[3] || '').trim(); // Notes opsional
+          
+          // Skip jika semua field kosong (baris kosong)
+          if (!name && !docNo && !address) {
+            continue;
+          }
+          
+          // Validasi: minimal harus ada nama dan nomor dokumen dan alamat
+          if (!name || !docNo || !address) {
+            errorCount++;
+            console.log(`Baris ${i + 2} dilewati - Data tidak lengkap:`, { name, docNo, address });
+            continue;
+          }
+          
+          addCustomerItem({ name, docNo, address, notes });
+          successCount++;
+        }
+        
+        if (successCount > 0) {
+          showSuccess(`Berhasil mengimpor ${successCount} customer${successCount > 1 ? '' : ''}.${errorCount > 0 ? ` ${errorCount} baris dilewati karena data tidak lengkap.` : ''}`);
+          setTimeout(() => clearError(), 5000);
+        } else {
+          showError(`Tidak ada data yang berhasil diimpor. ${errorCount > 0 ? `${errorCount} baris ditemukan tetapi data tidak lengkap.` : 'Pastikan format file sesuai template (Kolom: Nama Customer, Nomor Dokumen, Alamat Customer).'}`);
+        }
+        
+      } catch (error) {
+        console.error('Error processing file:', error);
+        showError('Gagal membaca file Excel. Pastikan file tidak rusak dan format sesuai template. Error: ' + error.message);
+      }
+    }
+
+    // Fungsi untuk membaca dan memproses file Excel - Koordinat
+    async function processUploadedCoordFile(file) {
+      try {
+        const data = await file.arrayBuffer();
+        const workbook = XLSX.read(data, { type: 'array' });
+        const firstSheet = workbook.Sheets[workbook.SheetNames[0]];
+        
+        // Gunakan defval untuk menangani sel kosong
+        const jsonData = XLSX.utils.sheet_to_json(firstSheet, { 
+          header: 1, 
+          defval: '',
+          blankrows: false 
+        });
+        
+        console.log('Excel data read (coord):', jsonData);
+        
+        if (!jsonData || jsonData.length < 2) {
+          showError('File Excel kosong atau tidak valid. Pastikan ada header dan minimal 1 baris data.');
+          return;
+        }
+        
+        // Skip header row (baris pertama)
+        const rows = jsonData.slice(1);
+        
+        // Clear existing customers
+        document.getElementById('customersCoord').innerHTML = '';
+        
+        // Process each row
+        let successCount = 0;
+        let errorCount = 0;
+        
+        for (let i = 0; i < rows.length; i++) {
+          const row = rows[i];
+          
+          // Skip baris kosong atau baris yang semua selnya kosong
+          if (!row || row.length === 0) {
+            continue;
+          }
+          
+          // Pastikan array memiliki minimal 4 elemen (notes opsional)
+          while (row.length < 4) {
+            row.push('');
+          }
+          
+          const name = String(row[0] || '').trim();
+          const docNo = String(row[1] || '').trim();
+          const latStr = String(row[2] || '').trim();
+          const lngStr = String(row[3] || '').trim();
+          const notes = String(row[4] || '').trim(); // Notes opsional
+          
+          // Skip jika semua field kosong (baris kosong)
+          if (!name && !docNo && !latStr && !lngStr) {
+            continue;
+          }
+          
+          // Parse koordinat
+          const lat = parseFloat(latStr);
+          const lng = parseFloat(lngStr);
+          
+          // Validasi: semua field harus terisi dan koordinat harus valid
+          if (!name || !docNo || isNaN(lat) || isNaN(lng)) {
+            errorCount++;
+            console.log(`Baris ${i + 2} dilewati - Data tidak lengkap atau tidak valid:`, { name, docNo, lat, lng });
+            continue;
+          }
+          
+          // Validasi koordinat
+          if (lat < -90 || lat > 90 || lng < -180 || lng > 180) {
+            errorCount++;
+            console.log(`Baris ${i + 2} dilewati - Koordinat tidak valid:`, { lat, lng });
+            continue;
+          }
+          
+          addCustomerItemCoord({ name, docNo, lat: lat.toString(), lng: lng.toString(), notes });
+          successCount++;
+        }
+        
+        if (successCount > 0) {
+          showSuccess(`Berhasil mengimpor ${successCount} customer${successCount > 1 ? '' : ''}.${errorCount > 0 ? ` ${errorCount} baris dilewati karena data tidak lengkap atau tidak valid.` : ''}`);
+          setTimeout(() => clearError(), 5000);
+        } else {
+          showError(`Tidak ada data yang berhasil diimpor. ${errorCount > 0 ? `${errorCount} baris ditemukan tetapi data tidak lengkap atau tidak valid.` : 'Pastikan format file sesuai template (Kolom: Nama Customer, Nomor Dokumen, Latitude, Longitude).'}`);
+        }
+        
+      } catch (error) {
+        console.error('Error processing file:', error);
+        showError('Gagal membaca file Excel. Pastikan file tidak rusak dan format sesuai template. Error: ' + error.message);
+      }
     }
 
     function toggleStoreLock() {
@@ -1601,6 +2162,21 @@
       return null;
     }
 
+    // Fungsi untuk mendapatkan origin store dengan prioritas koordinat dari database
+    async function getStoreOrigin() {
+      // Jika toko dipilih dari database dan memiliki koordinat, gunakan koordinat tersebut
+      if (selectedStoreData && selectedStoreData.latitude && selectedStoreData.longitude) {
+        const location = new google.maps.LatLng(selectedStoreData.latitude, selectedStoreData.longitude);
+        return {
+          location: location,
+          formatted: selectedStoreData.address
+        };
+      }
+      
+      // Jika tidak, gunakan geocoding seperti biasa
+      return await getPlaceOrGeocode(dom.storeAddress(), storeAutocomplete);
+    }
+
     async function getPlaceOrGeocode(inputEl, autocompleteInstance) {
       const value = inputEl.value.trim();
       const place = autocompleteInstance && autocompleteInstance.getPlace ? autocompleteInstance.getPlace() : null;
@@ -1667,7 +2243,7 @@
 
     async function rerenderWithOrder(resolvedCustomers, order) {
       try {
-        const storeResolved = await getPlaceOrGeocode(dom.storeAddress(), storeAutocomplete);
+        const storeResolved = await getStoreOrigin();
         const origin = storeResolved.location;
         const waypoints = buildWaypointsFromOrder(resolvedCustomers, order);
         const request = {
@@ -1697,88 +2273,177 @@
         return;
       }
 
-      const customerItems = Array.from(dom.customers().querySelectorAll('.customer-item'));
-      if (customerItems.length === 0) {
-        showError('Tambahkan minimal 1 customer.');
-        return;
-      }
+      // Deteksi tab aktif
+      const activeTab = document.querySelector('.form-tab-btn.active').dataset.formTab;
+      let customerItems = [];
+      let resolvedCustomers = [];
 
-      const customersInput = customerItems.map(item => {
-        const name = item.querySelector('input[id^="custName-"]').value.trim();
-        const docNo = item.querySelector('input[id^="custDoc-"]').value.trim();
-        const address = item.querySelector('input[id^="custAddr-"]').value.trim();
-        return { name, docNo, address };
-      }).filter(c => c.address);
-
-      if (customersInput.length === 0) {
-        showError('Setidaknya satu customer memiliki alamat yang valid.');
-        return;
-      }
-      const missingDoc = customersInput.find(c => !c.docNo);
-      if (missingDoc) {
-        showError('Nomor dokumen wajib diisi untuk setiap customer.');
-        return;
-      }
-
-      dom.processBtn().disabled = true;
-      dom.processBtn().textContent = 'Memproses...';
-
-      try {
-        const originResolved = await getPlaceOrGeocode(dom.storeAddress(), storeAutocomplete);
-        const origin = originResolved.location;
-
-        const resolvedCustomers = [];
-        for (let i = 0; i < customersInput.length; i++) {
-          const addrInput = customerItems[i].querySelector('input[id^="custAddr-"]');
-          const nameInput = customerItems[i].querySelector('input[id^="custName-"]');
-          const docInput = customerItems[i].querySelector('input[id^="custDoc-"]');
-          const ac = customerAutocompletes.find(a => a.input === addrInput);
-          const resolved = await getPlaceOrGeocode(addrInput, ac);
-          resolvedCustomers.push({
-            name: nameInput.value,
-            docNo: docInput.value,
-            formatted: resolved.formatted,
-            location: resolved.location,
-          });
+      if (activeTab === 'address') {
+        // Mode alamat lengkap
+        customerItems = Array.from(dom.customers().querySelectorAll('.customer-item'));
+        if (customerItems.length === 0) {
+          showError('Tambahkan minimal 1 customer.');
+          return;
         }
 
-        const customerLatLngs = resolvedCustomers.map(c => c.location);
-        let order;
+        const customersInput = customerItems.map(item => {
+          const name = item.querySelector('input[id^="custName-"]').value.trim();
+          const docNo = item.querySelector('input[id^="custDoc-"]').value.trim();
+          const address = item.querySelector('input[id^="custAddr-"]').value.trim();
+          const notes = item.querySelector('input[id^="custNotes-"]') ? item.querySelector('input[id^="custNotes-"]').value.trim() : '';
+          return { name, docNo, address, notes };
+        }).filter(c => c.address);
+
+        if (customersInput.length === 0) {
+          showError('Setidaknya satu customer memiliki alamat yang valid.');
+          return;
+        }
+        const missingDoc = customersInput.find(c => !c.docNo);
+        if (missingDoc) {
+          showError('Nomor dokumen wajib diisi untuk setiap customer.');
+          return;
+        }
+
+        dom.processBtn().disabled = true;
+        dom.processBtn().textContent = 'Memproses...';
+
         try {
-          order = await computeNearestOrder(origin, customerLatLngs);
-        } catch (e) {
-          if (e && e.message === 'REQUEST_DENIED') {
-            console.warn('Distance Matrix ditolak. Menggunakan urutan input.');
-            order = customerLatLngs.map((_, i) => i);
-            showError('Distance Matrix ditolak API Key. Urutan otomatis dinonaktifkan. Periksa pengaturan API (aktifkan Distance Matrix API atau perbaiki restriction).');
-          } else {
-            throw e;
+          const originResolved = await getStoreOrigin();
+          const origin = originResolved.location;
+
+          for (let i = 0; i < customersInput.length; i++) {
+            const addrInput = customerItems[i].querySelector('input[id^="custAddr-"]');
+            const nameInput = customerItems[i].querySelector('input[id^="custName-"]');
+            const docInput = customerItems[i].querySelector('input[id^="custDoc-"]');
+            const notesInput = customerItems[i].querySelector('input[id^="custNotes-"]');
+            const ac = customerAutocompletes.find(a => a.input === addrInput);
+            const resolved = await getPlaceOrGeocode(addrInput, ac);
+            resolvedCustomers.push({
+              name: nameInput.value,
+              docNo: docInput.value,
+              formatted: resolved.formatted,
+              location: resolved.location,
+              notes: notesInput ? notesInput.value.trim() : '',
+            });
           }
+
+          await processRouteWithCustomers(origin, originResolved.formatted, resolvedCustomers);
+        } catch (err) {
+          console.error(err);
+          showError(err.message || 'Gagal menghitung rute. Periksa input dan API key.');
+        } finally {
+          dom.processBtn().disabled = false;
+          dom.processBtn().textContent = 'Proses Rute';
         }
-        const waypoints = buildWaypointsFromOrder(resolvedCustomers, order);
+      } else if (activeTab === 'coordinates') {
+        // Mode koordinat
+        customerItems = Array.from(document.getElementById('customersCoord').querySelectorAll('.customer-item'));
+        if (customerItems.length === 0) {
+          showError('Tambahkan minimal 1 customer.');
+          return;
+        }
 
-        const request = {
-          origin,
-          destination: origin,
-          travelMode: google.maps.TravelMode.DRIVING,
-          provideRouteAlternatives: false,
-          optimizeWaypoints: false,
-          waypoints,
-        };
+        const customersInput = customerItems.map(item => {
+          const name = item.querySelector('input[id^="custCoordName-"]').value.trim();
+          const docNo = item.querySelector('input[id^="custCoordDoc-"]').value.trim();
+          const lat = parseFloat(item.querySelector('input[id^="custCoordLat-"]').value.trim());
+          const lng = parseFloat(item.querySelector('input[id^="custCoordLng-"]').value.trim());
+          const notes = item.querySelector('input[id^="custCoordNotes-"]') ? item.querySelector('input[id^="custCoordNotes-"]').value.trim() : '';
+          return { name, docNo, lat, lng, notes };
+        }).filter(c => !isNaN(c.lat) && !isNaN(c.lng) && c.lat !== 0 && c.lng !== 0);
 
-        const response = await directionsService.route(request);
+        if (customersInput.length === 0) {
+          showError('Setidaknya satu customer memiliki koordinat yang valid.');
+          return;
+        }
+        const missingDoc = customersInput.find(c => !c.docNo);
+        if (missingDoc) {
+          showError('Nomor dokumen wajib diisi untuk setiap customer.');
+          return;
+        }
+
+        // Validasi koordinat
+        const invalidCoord = customersInput.find(c => c.lat < -90 || c.lat > 90 || c.lng < -180 || c.lng > 180);
+        if (invalidCoord) {
+          showError('Koordinat tidak valid. Latitude harus antara -90 sampai 90, Longitude harus antara -180 sampai 180.');
+          return;
+        }
+
+        dom.processBtn().disabled = true;
+        dom.processBtn().textContent = 'Memproses...';
+
         try {
-          renderRoute(response, { geometry: { location: origin }, formatted_address: originResolved.formatted }, order, resolvedCustomers);
-        } catch (renderError) {
-          console.error('Error in renderRoute:', renderError);
-          showError('Gagal merender rute: ' + renderError.message);
+          const originResolved = await getStoreOrigin();
+          const origin = originResolved.location;
+
+          // Geocode koordinat untuk mendapatkan alamat lengkap
+          for (let i = 0; i < customersInput.length; i++) {
+            const customer = customersInput[i];
+            const location = new google.maps.LatLng(customer.lat, customer.lng);
+            
+            // Reverse geocode untuk mendapatkan alamat
+            const geocodeResp = await new Promise((resolve, reject) => {
+              geocoder.geocode({ location: location }, (results, status) => {
+                if (status === 'OK' && results[0]) {
+                  resolve(results[0]);
+                } else {
+                  reject(new Error('Gagal mendapatkan alamat untuk koordinat: ' + customer.lat + ', ' + customer.lng));
+                }
+              });
+            });
+
+            resolvedCustomers.push({
+              name: customer.name,
+              docNo: customer.docNo,
+              formatted: geocodeResp.formatted_address || `${customer.lat}, ${customer.lng}`,
+              location: location,
+              notes: customer.notes || '',
+            });
+          }
+
+          await processRouteWithCustomers(origin, originResolved.formatted, resolvedCustomers);
+        } catch (err) {
+          console.error(err);
+          showError(err.message || 'Gagal menghitung rute. Periksa input dan API key.');
+        } finally {
+          dom.processBtn().disabled = false;
+          dom.processBtn().textContent = 'Proses Rute';
         }
-      } catch (err) {
-        console.error(err);
-        showError(err.message || 'Gagal menghitung rute. Periksa input dan API key.');
-      } finally {
-        dom.processBtn().disabled = false;
-        dom.processBtn().textContent = 'Proses Rute';
+      }
+    }
+
+    // Fungsi helper untuk memproses rute dengan customers yang sudah di-resolve
+    async function processRouteWithCustomers(origin, originFormatted, resolvedCustomers) {
+      const customerLatLngs = resolvedCustomers.map(c => c.location);
+      let order;
+      try {
+        order = await computeNearestOrder(origin, customerLatLngs);
+      } catch (e) {
+        if (e && e.message === 'REQUEST_DENIED') {
+          console.warn('Distance Matrix ditolak. Menggunakan urutan input.');
+          order = customerLatLngs.map((_, i) => i);
+          showError('Distance Matrix ditolak API Key. Urutan otomatis dinonaktifkan. Periksa pengaturan API (aktifkan Distance Matrix API atau perbaiki restriction).');
+        } else {
+          throw e;
+        }
+      }
+      const waypoints = buildWaypointsFromOrder(resolvedCustomers, order);
+
+      const request = {
+        origin,
+        destination: origin,
+        travelMode: google.maps.TravelMode.DRIVING,
+        provideRouteAlternatives: false,
+        optimizeWaypoints: false,
+        waypoints,
+      };
+
+      const response = await directionsService.route(request);
+      try {
+        renderRoute(response, { geometry: { location: origin }, formatted_address: originFormatted }, order, resolvedCustomers);
+      } catch (renderError) {
+        console.error('Error in renderRoute:', renderError);
+        showError('Gagal merender rute: ' + renderError.message);
       }
     }
 
@@ -1810,11 +2475,18 @@
         totalDuration: formatDuration(totalSeconds),
         dropPoints: order.map((custIndex, idx) => {
           const c = resolvedCustomers[custIndex];
-          return {
+          const dropPoint = {
             name: c.name || ('Customer ' + (idx+1)),
             docNo: c.docNo,
-            address: c.formatted
+            address: c.formatted,
+            notes: c.notes || ''
           };
+          // Simpan koordinat asli jika tersedia (untuk tab koordinat)
+          if (c.location && c.location.lat && c.location.lng) {
+            dropPoint.latitude = c.location.lat();
+            dropPoint.longitude = c.location.lng();
+          }
+          return dropPoint;
         })
       };
       
@@ -1868,7 +2540,11 @@
       dom.storeAddress().style.backgroundColor = '#fff';
       dom.storeAddress().style.cursor = 'text';
       if (isStoreLocked) toggleStoreLock();
+      // Reset kedua tab
       dom.customers().innerHTML = '';
+      document.getElementById('customersCoord').innerHTML = '';
+      // Reset ke tab pertama
+      switchFormTab('address');
       dom.summaryButtonContainer().classList.add('hidden');
       clearMarkers();
       clearPolylines();
@@ -1876,6 +2552,9 @@
       directionsRenderer.set('directions', null);
       cityPlace = null;
       currentRouteData = null;
+      selectedStoreData = null; // Reset selected store data
+      // Reset customer autocompletes
+      customerAutocompletes = [];
     }
 
     // Fungsi untuk download PDF
@@ -2000,12 +2679,13 @@
       doc.text('DAFTAR DROP POINTS', margin, currentY);
       currentY += 8;
       
-      const dropHeaders = ['#', 'Nama Customer', 'No. Dokumen', 'Alamat', 'Urutan'];
+      const dropHeaders = ['#', 'Nama Customer', 'No. Dokumen', 'Alamat', 'Notes', 'Urutan'];
       const dropData = currentRouteData.dropPoints.map((drop, index) => [
         index + 1,
         drop.name.length > 25 ? drop.name.substring(0, 22) + '...' : drop.name,
         drop.docNo.length > 15 ? drop.docNo.substring(0, 12) + '...' : drop.docNo,
-        drop.address.length > 40 ? drop.address.substring(0, 37) + '...' : drop.address,
+        drop.address || '-', // Alamat lengkap tanpa dipotong
+        (drop.notes || '').length > 30 ? (drop.notes || '').substring(0, 27) + '...' : (drop.notes || '-'),
         `Drop ${index + 1}`
       ]);
       
@@ -2018,7 +2698,8 @@
           fontSize: 8,
           cellPadding: 2.5,
           lineColor: [200, 200, 200],
-          lineWidth: 0.5
+          lineWidth: 0.5,
+          overflow: 'linebreak'
         },
         headStyles: { 
           fillColor: [102, 126, 234],
@@ -2029,10 +2710,11 @@
         alternateRowStyles: { fillColor: [248, 250, 252] },
         columnStyles: {
           0: { cellWidth: 10, halign: 'center' }, // Nomor
-          1: { cellWidth: 40, halign: 'left' },   // Nama
-          2: { cellWidth: 30, halign: 'center' }, // No. Dokumen
-          3: { cellWidth: 80, halign: 'left' },   // Alamat
-          4: { cellWidth: 20, halign: 'center' }  // Urutan
+          1: { cellWidth: 30, halign: 'left' },   // Nama
+          2: { cellWidth: 22, halign: 'center' }, // No. Dokumen
+          3: { cellWidth: 80, halign: 'left', overflow: 'linebreak' },   // Alamat - lengkap dengan wrapping
+          4: { cellWidth: 35, halign: 'left' },   // Notes
+          5: { cellWidth: 18, halign: 'center' }  // Urutan
         },
         didDrawPage: function(data) {
           // Footer untuk setiap halaman
@@ -2115,7 +2797,7 @@
         ['Tanggal Dibuat:', new Date().toLocaleString('id-ID')],
         [''],
         ['DETAIL DROP POINTS'],
-        ['#', 'Nama Customer', 'No. Dokumen', 'Alamat', 'Urutan']
+        ['#', 'Nama Customer', 'No. Dokumen', 'Alamat', 'Notes', 'Urutan']
       ];
 
       // Tambahkan data drop points
@@ -2125,6 +2807,7 @@
           drop.name,
           drop.docNo,
           drop.address,
+          drop.notes || '',
           `Drop ${index + 1}`
         ]);
       });
@@ -2137,16 +2820,17 @@
         { wch: 5 },   // #
         { wch: 25 },  // Nama Customer
         { wch: 20 },  // No. Dokumen
-        { wch: 60 },  // Alamat
+        { wch: 50 },  // Alamat
+        { wch: 30 },  // Notes
         { wch: 15 }   // Urutan
       ];
 
       // Merge cells untuk header
       ws2['!merges'] = [
-        { s: { r: 0, c: 0 }, e: { r: 0, c: 4 } }, // Judul utama
+        { s: { r: 0, c: 0 }, e: { r: 0, c: 5 } }, // Judul utama
         { s: { r: 2, c: 0 }, e: { r: 2, c: 1 } }, // Alamat Toko
         { s: { r: 3, c: 0 }, e: { r: 3, c: 1 } }, // Tanggal
-        { s: { r: 5, c: 0 }, e: { r: 5, c: 4 } }  // Detail Drop Points
+        { s: { r: 5, c: 0 }, e: { r: 5, c: 5 } }  // Detail Drop Points
       ];
 
       XLSX.utils.book_append_sheet(wb, ws2, 'Drop Points');
@@ -2314,6 +2998,7 @@
       });
 
       addCustomerItem();
+      addCustomerItemCoord(); // Tambahkan satu customer default di tab koordinat
 
       // Load store database
       loadStoreDatabase();
@@ -2321,13 +3006,45 @@
       dom.lockStoreBtn().addEventListener('click', toggleStoreLock);
       dom.storeSelect().addEventListener('change', handleStoreSelection);
       dom.addCustomerBtn().addEventListener('click', () => addCustomerItem());
+      document.getElementById('addCustomerCoordBtn').addEventListener('click', () => addCustomerItemCoord());
       dom.processBtn().addEventListener('click', processRoute);
       dom.resetBtn().addEventListener('click', resetAll);
       
-      // Sidenav event listeners
-      dom.menuToggle().addEventListener('click', toggleSidenav);
-      dom.closeSidenav().addEventListener('click', closeSidenav);
-      dom.sidenavOverlay().addEventListener('click', closeSidenav);
+      // Upload dan Download Template event listeners
+      document.getElementById('downloadTemplateAddressBtn').addEventListener('click', downloadTemplateAddress);
+      document.getElementById('downloadTemplateCoordBtn').addEventListener('click', downloadTemplateCoord);
+      
+      // Button upload untuk trigger file input
+      document.getElementById('uploadAddressBtn').addEventListener('click', () => {
+        document.getElementById('uploadAddressFile').click();
+      });
+      
+      document.getElementById('uploadCoordBtn').addEventListener('click', () => {
+        document.getElementById('uploadCoordFile').click();
+      });
+      
+      document.getElementById('uploadAddressFile').addEventListener('change', (e) => {
+        const file = e.target.files[0];
+        if (file) {
+          processUploadedAddressFile(file);
+          // Reset input untuk memungkinkan upload file yang sama lagi
+          e.target.value = '';
+        }
+      });
+      
+      document.getElementById('uploadCoordFile').addEventListener('change', (e) => {
+        const file = e.target.files[0];
+        if (file) {
+          processUploadedCoordFile(file);
+          // Reset input untuk memungkinkan upload file yang sama lagi
+          e.target.value = '';
+        }
+      });
+      
+      // Form tab switcher event listeners
+      document.querySelectorAll('.form-tab-btn').forEach(btn => {
+        btn.addEventListener('click', () => switchFormTab(btn.dataset.formTab));
+      });
       
       // Modal event listeners
       dom.viewSummaryBtn().addEventListener('click', () => {
@@ -2348,21 +3065,6 @@
       dom.modalDownloadPdf().addEventListener('click', downloadPDF);
       dom.modalDownloadExcel().addEventListener('click', downloadExcel);
       dom.modalDownloadImg().addEventListener('click', downloadImage);
-      
-      // Handle window resize untuk sidenav
-      window.addEventListener('resize', () => {
-        const sidenav = dom.sidenav();
-        const overlay = dom.sidenavOverlay();
-        
-        // Jika resize ke desktop/tablet, sembunyikan overlay
-        if (window.innerWidth > 768) {
-          overlay.classList.remove('show');
-        }
-        // Jika resize ke mobile dan sidenav terbuka, tampilkan overlay
-        else if (window.innerWidth <= 768 && sidenav.classList.contains('open')) {
-          overlay.classList.add('show');
-        }
-      });
     }
 
     window.initMap = initMap;
