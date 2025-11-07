@@ -63,6 +63,92 @@
       text-shadow: 0 2px 4px rgba(0,0,0,0.1);
     }
     
+    /* Loading Overlay dengan Animasi Truck */
+    .loading-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.7);
+      -webkit-backdrop-filter: blur(4px);
+      backdrop-filter: blur(4px);
+      z-index: 3000;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+    .loading-overlay.show {
+      display: flex;
+      opacity: 1;
+    }
+    .loading-content {
+      text-align: center;
+      color: #fff;
+    }
+    .loading-text {
+      font-size: 20px;
+      font-weight: 600;
+      margin-top: 20px;
+      color: #fff;
+      text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+    }
+    .truck-container {
+      width: 100%;
+      height: 100px;
+      position: relative;
+      overflow: hidden;
+      margin-bottom: 20px;
+    }
+    .truck {
+      position: absolute;
+      width: 80px;
+      height: 80px;
+      left: -100px;
+      top: 50%;
+      transform: translateY(-50%);
+      animation: truckMove 3s ease-in-out infinite;
+    }
+    .truck svg {
+      width: 100%;
+      height: 100%;
+      filter: drop-shadow(0 4px 8px rgba(0,0,0,0.3));
+    }
+    @keyframes truckMove {
+      0% {
+        left: -100px;
+      }
+      50% {
+        left: calc(50% - 40px);
+      }
+      100% {
+        left: calc(100% + 100px);
+      }
+    }
+    .road {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: 4px;
+      background: linear-gradient(90deg, 
+        rgba(255,255,255,0.1) 0%, 
+        rgba(255,255,255,0.3) 50%, 
+        rgba(255,255,255,0.1) 100%);
+      animation: roadMove 1s linear infinite;
+    }
+    @keyframes roadMove {
+      0% {
+        background-position: 0 0;
+      }
+      100% {
+        background-position: 50px 0;
+      }
+    }
+    
     /* Modal Styles */
     .modal {
       position: fixed;
@@ -496,7 +582,121 @@
       grid-column: 2;
       grid-row: 2;
     }
-    .customers { display: flex; flex-direction: column; gap: 16px; }
+    .customers { 
+      display: flex; 
+      flex-direction: column; 
+      gap: 12px; 
+      max-height: 400px;
+      overflow-y: auto;
+      padding: 8px;
+    }
+    .customer-list-item { 
+      background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+      border: 2px solid #e2e8f0; 
+      border-radius: 12px; 
+      padding: 12px 16px; 
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+    .customer-list-item::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 4px;
+      height: 100%;
+      background: var(--gradient-primary);
+      transform: scaleY(0);
+      transition: transform 0.3s ease;
+    }
+    .customer-list-item:hover {
+      border-color: var(--primary-light);
+      box-shadow: var(--shadow-md);
+      transform: translateY(-1px);
+    }
+    .customer-list-item:hover::before {
+      transform: scaleY(1);
+    }
+    .customer-list-item.dragging {
+      opacity: 0.5;
+      transform: scale(0.95);
+      cursor: grabbing;
+    }
+    .customer-list-item.drag-over {
+      border-color: var(--primary);
+      background: linear-gradient(135deg, #e0f2fe 0%, #f0f9ff 100%);
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-lg);
+    }
+    .customer-list-item.drag-over::before {
+      transform: scaleY(1);
+      background: var(--primary);
+    }
+    .customer-list-drag-handle {
+      cursor: grab;
+      padding: 8px;
+      margin-right: 8px;
+      color: var(--text-muted);
+      font-size: 18px;
+      -webkit-user-select: none;
+      user-select: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      transition: color 0.2s ease;
+    }
+    .customer-list-drag-handle:hover {
+      color: var(--primary);
+    }
+    .customer-list-drag-handle:active {
+      cursor: grabbing;
+    }
+    .customer-list-info {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      min-width: 0;
+    }
+    .customer-list-name {
+      font-weight: 600;
+      color: var(--text-primary);
+      font-size: 14px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .customer-list-doc {
+      font-size: 12px;
+      color: var(--text-secondary);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .customer-list-address {
+      font-size: 11px;
+      color: var(--text-muted);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      margin-top: 2px;
+    }
+    .customer-list-actions {
+      display: flex;
+      gap: 8px;
+      flex-shrink: 0;
+    }
+    .customer-list-actions button {
+      padding: 6px 12px;
+      font-size: 12px;
+      min-width: auto;
+    }
     .customer-item { 
       background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
       border: 2px solid #e2e8f0; 
@@ -1047,9 +1247,38 @@
   <header>
     <div class="header-content">
       <h1>Mapping Rute Pengiriman</h1>
-      <h4>by Ilham Apps</h4>
     </div>
   </header>
+  
+  <!-- Loading Overlay dengan Animasi Truck -->
+  <div id="loadingOverlay" class="loading-overlay">
+    <div class="loading-content">
+      <div class="truck-container">
+        <div class="truck">
+          <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+            <!-- Truck Body -->
+            <rect x="20" y="40" width="50" height="30" fill="#6366f1" rx="3"/>
+            <!-- Truck Cabin -->
+            <rect x="5" y="35" width="20" height="35" fill="#4f46e5" rx="2"/>
+            <!-- Truck Window -->
+            <rect x="8" y="38" width="14" height="12" fill="#c7d2fe" rx="1"/>
+            <!-- Truck Wheels -->
+            <circle cx="25" cy="75" r="8" fill="#1e293b"/>
+            <circle cx="25" cy="75" r="5" fill="#475569"/>
+            <circle cx="65" cy="75" r="8" fill="#1e293b"/>
+            <circle cx="65" cy="75" r="5" fill="#475569"/>
+            <!-- Truck Details -->
+            <rect x="25" y="45" width="15" height="8" fill="#818cf8" rx="1"/>
+            <rect x="45" y="45" width="15" height="8" fill="#818cf8" rx="1"/>
+            <!-- Truck Light -->
+            <circle cx="70" cy="55" r="3" fill="#fbbf24"/>
+          </svg>
+        </div>
+        <div class="road"></div>
+      </div>
+      <div class="loading-text">Memproses Rute Pengiriman...</div>
+    </div>
+  </div>
   
   <!-- Modal untuk Ringkasan Rute -->
   <div id="routeModal" class="modal">
@@ -1114,6 +1343,54 @@
           <button id="modalDownloadExcel" class="download-btn">📊 Download Excel</button>
           <button id="modalDownloadImg" class="download-btn">🖼️ Download Gambar</button>
         </div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Modal untuk Form Customer -->
+  <div id="customerModal" class="modal">
+    <div class="modal-content" style="max-width: 600px;">
+      <div class="modal-header">
+        <h2 id="customerModalTitle">Tambah Customer</h2>
+        <button id="closeCustomerModal" class="close-modal">&times;</button>
+      </div>
+      <div class="modal-body">
+        <form id="customerForm">
+          <div class="row">
+            <label for="modalCustName">Nama Customer</label>
+            <input id="modalCustName" type="text" placeholder="Nama customer" required>
+          </div>
+          <div class="row">
+            <label for="modalCustDoc">Nomor Dokumen</label>
+            <input id="modalCustDoc" type="text" placeholder="Contoh: DO-2025-0001" required>
+          </div>
+          <!-- Form fields untuk tab alamat -->
+          <div id="modalAddressFields">
+            <div class="row">
+              <label for="modalCustAddr">Alamat Customer</label>
+              <input id="modalCustAddr" type="text" placeholder="Ketik alamat atau paste URL Google Maps...">
+            </div>
+          </div>
+          <!-- Form fields untuk tab koordinat -->
+          <div id="modalCoordFields" style="display: none;">
+            <div class="row">
+              <label for="modalCustLat">Latitude</label>
+              <input id="modalCustLat" type="number" step="any" placeholder="-6.2088">
+            </div>
+            <div class="row">
+              <label for="modalCustLng">Longitude</label>
+              <input id="modalCustLng" type="number" step="any" placeholder="106.8456">
+            </div>
+          </div>
+          <div class="row">
+            <label for="modalCustNotes">Notes</label>
+            <input id="modalCustNotes" type="text" placeholder="Catatan tambahan (opsional)">
+          </div>
+          <div class="inline" style="justify-content: flex-end; margin-top: 20px;">
+            <button type="button" id="cancelCustomerBtn" class="secondary">Batal</button>
+            <button type="submit" id="saveCustomerBtn" class="primary">Simpan</button>
+          </div>
+        </form>
       </div>
     </div>
   </div>
@@ -1244,6 +1521,7 @@
       processBtn: () => document.getElementById('processBtn'),
       resetBtn: () => document.getElementById('resetBtn'),
       errorBox: () => document.getElementById('errorBox'),
+      loadingOverlay: () => document.getElementById('loadingOverlay'),
       // Download buttons
       downloadButtons: () => document.getElementById('downloadButtons'),
       downloadPdfBtn: () => document.getElementById('downloadPdfBtn'),
@@ -1261,6 +1539,20 @@
       modalDownloadPdf: () => document.getElementById('modalDownloadPdf'),
       modalDownloadExcel: () => document.getElementById('modalDownloadExcel'),
       modalDownloadImg: () => document.getElementById('modalDownloadImg'),
+      // Customer modal elements
+      customerModal: () => document.getElementById('customerModal'),
+      closeCustomerModal: () => document.getElementById('closeCustomerModal'),
+      customerModalTitle: () => document.getElementById('customerModalTitle'),
+      customerForm: () => document.getElementById('customerForm'),
+      modalCustName: () => document.getElementById('modalCustName'),
+      modalCustDoc: () => document.getElementById('modalCustDoc'),
+      modalCustAddr: () => document.getElementById('modalCustAddr'),
+      modalCustLat: () => document.getElementById('modalCustLat'),
+      modalCustLng: () => document.getElementById('modalCustLng'),
+      modalCustNotes: () => document.getElementById('modalCustNotes'),
+      modalAddressFields: () => document.getElementById('modalAddressFields'),
+      modalCoordFields: () => document.getElementById('modalCoordFields'),
+      cancelCustomerBtn: () => document.getElementById('cancelCustomerBtn'),
     };
 
     const ROUTE_COLORS = ['#1e88e5','#43a047','#f4511e','#8e24aa','#fb8c00','#3949ab','#00acc1','#6d4c41','#e53935','#7cb342'];
@@ -1665,6 +1957,18 @@
       box.classList.remove('error', 'success');
     }
 
+    function showLoading() {
+      const overlay = dom.loadingOverlay();
+      overlay.classList.add('show');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function hideLoading() {
+      const overlay = dom.loadingOverlay();
+      overlay.classList.remove('show');
+      document.body.style.overflow = '';
+    }
+
     // Fungsi untuk switch form tab
     function switchFormTab(tabName) {
       // Remove active class from all tabs and panes
@@ -1674,6 +1978,349 @@
       // Add active class to selected tab and pane
       document.querySelector(`[data-form-tab="${tabName}"]`).classList.add('active');
       document.getElementById(`${tabName}Tab`).classList.add('active');
+      
+      // Update modal fields berdasarkan tab aktif
+      updateCustomerModalFields(tabName);
+    }
+
+    // Array untuk menyimpan data customer
+    let customersData = {
+      address: [],
+      coordinates: []
+    };
+    let editingCustomerIndex = null;
+    let editingCustomerType = null; // 'address' atau 'coordinates'
+
+    // Fungsi untuk update modal fields berdasarkan tab aktif
+    function updateCustomerModalFields(tabName) {
+      if (tabName === 'address') {
+        dom.modalAddressFields().style.display = 'block';
+        dom.modalCoordFields().style.display = 'none';
+        dom.modalCustAddr().required = true;
+        dom.modalCustLat().required = false;
+        dom.modalCustLng().required = false;
+      } else {
+        dom.modalAddressFields().style.display = 'none';
+        dom.modalCoordFields().style.display = 'block';
+        dom.modalCustAddr().required = false;
+        dom.modalCustLat().required = true;
+        dom.modalCustLng().required = true;
+      }
+    }
+
+    // Fungsi untuk membuka modal customer
+    function openCustomerModal(type = null, index = null) {
+      const activeTab = document.querySelector('.form-tab-btn.active').dataset.formTab;
+      const customerType = type || activeTab;
+      
+      editingCustomerIndex = index;
+      editingCustomerType = customerType;
+      
+      // Update modal fields
+      updateCustomerModalFields(customerType);
+      
+      // Reset form
+      dom.customerForm().reset();
+      
+      // Jika edit mode, isi form dengan data yang ada
+      if (index !== null) {
+        const customer = customersData[customerType][index];
+        dom.modalCustName().value = customer.name || '';
+        dom.modalCustDoc().value = customer.docNo || '';
+        dom.modalCustNotes().value = customer.notes || '';
+        
+        if (customerType === 'address') {
+          dom.modalCustAddr().value = customer.address || '';
+        } else {
+          dom.modalCustLat().value = customer.lat || '';
+          dom.modalCustLng().value = customer.lng || '';
+        }
+        
+        dom.customerModalTitle().textContent = 'Edit Customer';
+      } else {
+        dom.customerModalTitle().textContent = 'Tambah Customer';
+      }
+      
+      // Buka modal
+      const modal = dom.customerModal();
+      modal.classList.add('show');
+      document.body.style.overflow = 'hidden';
+      
+      // Setup autocomplete untuk alamat jika tab address
+      if (customerType === 'address') {
+        setTimeout(() => {
+          setupAddressAutocomplete();
+        }, 100);
+      }
+    }
+
+    // Fungsi untuk menutup modal customer
+    function closeCustomerModal() {
+      const modal = dom.customerModal();
+      modal.classList.remove('show');
+      document.body.style.overflow = 'auto';
+      editingCustomerIndex = null;
+      editingCustomerType = null;
+      dom.customerForm().reset();
+    }
+
+    // Fungsi untuk setup autocomplete pada input alamat di modal
+    function setupAddressAutocomplete() {
+      const addrInput = dom.modalCustAddr();
+      // Hapus autocomplete yang sudah ada jika ada
+      if (addrInput._autocomplete) {
+        google.maps.event.clearInstanceListeners(addrInput._autocomplete);
+      }
+      
+      const autocomplete = new google.maps.places.Autocomplete(addrInput, {
+        fields: ['geometry', 'formatted_address', 'name', 'address_components'],
+        types: ['geocode'],
+      });
+      
+      if (cityPlace && cityPlace.geometry && cityPlace.geometry.viewport) {
+        autocomplete.setBounds(cityPlace.geometry.viewport);
+        autocomplete.setOptions({ strictBounds: false });
+      }
+      
+      addrInput._autocomplete = autocomplete;
+    }
+
+    // Fungsi untuk render list customer yang compact
+    function renderCustomerList(type) {
+      const container = type === 'address' ? dom.customers() : document.getElementById('customersCoord');
+      container.innerHTML = '';
+      
+      const customers = customersData[type];
+      
+      if (customers.length === 0) {
+        const emptyMsg = document.createElement('div');
+        emptyMsg.className = 'muted';
+        emptyMsg.style.textAlign = 'center';
+        emptyMsg.style.padding = '20px';
+        emptyMsg.textContent = 'Belum ada customer. Klik "Tambah Customer" untuk menambahkan.';
+        container.appendChild(emptyMsg);
+        return;
+      }
+      
+      // Helper function untuk menentukan posisi drop
+      function getDragAfterElement(container, y) {
+        const draggableElements = [...container.querySelectorAll('.customer-list-item:not(.dragging)')];
+        
+        return draggableElements.reduce((closest, child) => {
+          const box = child.getBoundingClientRect();
+          const offset = y - box.top - box.height / 2;
+          
+          if (offset < 0 && offset > closest.offset) {
+            return { offset: offset, element: child };
+          } else {
+            return closest;
+          }
+        }, { offset: Number.NEGATIVE_INFINITY }).element;
+      }
+      
+      let draggedIndex = null;
+      
+      customers.forEach((customer, index) => {
+        const listItem = document.createElement('div');
+        listItem.className = 'customer-list-item';
+        listItem.draggable = true;
+        listItem.dataset.index = index;
+        listItem.dataset.type = type;
+        
+        const addressDisplay = type === 'address' 
+          ? customer.address 
+          : `${customer.lat || ''}, ${customer.lng || ''}`;
+        
+        listItem.innerHTML = `
+          <div class="customer-list-drag-handle" title="Drag untuk mengubah urutan">☰</div>
+          <div class="customer-list-info">
+            <div class="customer-list-name">${customer.name || 'Tanpa Nama'}</div>
+            <div class="customer-list-doc">${customer.docNo || '-'}</div>
+            ${addressDisplay ? `<div class="customer-list-address">${addressDisplay}</div>` : ''}
+          </div>
+          <div class="customer-list-actions">
+            <button type="button" class="secondary edit-customer-btn" data-type="${type}" data-index="${index}">✏️ Edit</button>
+            <button type="button" class="secondary remove-customer-btn" data-type="${type}" data-index="${index}">🗑️ Hapus</button>
+          </div>
+        `;
+        
+        // Drag and Drop event handlers
+        listItem.addEventListener('dragstart', (e) => {
+          draggedIndex = index;
+          listItem.classList.add('dragging');
+          e.dataTransfer.effectAllowed = 'move';
+          e.dataTransfer.setData('text/plain', index.toString());
+        });
+        
+        listItem.addEventListener('dragend', (e) => {
+          listItem.classList.remove('dragging');
+          // Remove drag-over class from all items
+          container.querySelectorAll('.customer-list-item').forEach(item => {
+            item.classList.remove('drag-over');
+          });
+          draggedIndex = null;
+        });
+        
+        listItem.addEventListener('dragover', (e) => {
+          e.preventDefault();
+          e.dataTransfer.dropEffect = 'move';
+          
+          const dragging = container.querySelector('.dragging');
+          if (!dragging || dragging === listItem) return;
+          
+          const afterElement = getDragAfterElement(container, e.clientY);
+          
+          if (afterElement == null) {
+            container.appendChild(dragging);
+          } else {
+            container.insertBefore(dragging, afterElement);
+          }
+          
+          // Add drag-over class to current item if not dragging
+          listItem.classList.add('drag-over');
+        });
+        
+        listItem.addEventListener('dragleave', (e) => {
+          listItem.classList.remove('drag-over');
+        });
+        
+        listItem.addEventListener('drop', (e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          
+          // Remove drag-over class from all items
+          container.querySelectorAll('.customer-list-item').forEach(item => {
+            item.classList.remove('drag-over');
+          });
+          
+          if (draggedIndex !== null && draggedIndex !== index) {
+            // Get current order from DOM after drag
+            const items = Array.from(container.querySelectorAll('.customer-list-item'));
+            
+            // Create a map of old index to customer data
+            const customerMap = new Map();
+            customersData[type].forEach((customer, idx) => {
+              customerMap.set(idx, customer);
+            });
+            
+            // Reorder berdasarkan urutan DOM (urutan aktual setelah drag)
+            const reorderedCustomers = items.map(item => {
+              const oldIndex = parseInt(item.dataset.index);
+              return customerMap.get(oldIndex);
+            }).filter(c => c !== undefined); // Filter undefined jika ada
+            
+            customersData[type] = reorderedCustomers;
+            
+            // Re-render list dengan urutan baru
+            renderCustomerList(type);
+          }
+        });
+        
+        container.appendChild(listItem);
+      });
+      
+      // Tambahkan event listener pada container untuk drop di area kosong
+      container.addEventListener('dragover', (e) => {
+        e.preventDefault();
+        e.dataTransfer.dropEffect = 'move';
+      });
+      
+      container.addEventListener('drop', (e) => {
+        e.preventDefault();
+        if (draggedIndex !== null) {
+          // Get current order from DOM
+          const items = Array.from(container.querySelectorAll('.customer-list-item'));
+          
+          // Create a map of old index to customer data
+          const customerMap = new Map();
+          customersData[type].forEach((customer, idx) => {
+            customerMap.set(idx, customer);
+          });
+          
+          // Reorder berdasarkan urutan DOM
+          const reorderedCustomers = items.map(item => {
+            const oldIndex = parseInt(item.dataset.index);
+            return customerMap.get(oldIndex);
+          }).filter(c => c !== undefined);
+          
+          customersData[type] = reorderedCustomers;
+          renderCustomerList(type);
+        }
+      });
+      
+      // Tambahkan event listeners untuk tombol edit dan hapus
+      container.querySelectorAll('.edit-customer-btn').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          const type = e.target.getAttribute('data-type');
+          const index = parseInt(e.target.getAttribute('data-index'));
+          openCustomerModal(type, index);
+        });
+      });
+      
+      container.querySelectorAll('.remove-customer-btn').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          const type = e.target.getAttribute('data-type');
+          const index = parseInt(e.target.getAttribute('data-index'));
+          customersData[type].splice(index, 1);
+          renderCustomerList(type);
+        });
+      });
+    }
+
+    // Fungsi untuk menyimpan customer dari modal
+    function saveCustomerFromModal() {
+      const activeTab = editingCustomerType || document.querySelector('.form-tab-btn.active').dataset.formTab;
+      const customerType = activeTab === 'address' ? 'address' : 'coordinates';
+      
+      const name = dom.modalCustName().value.trim();
+      const docNo = dom.modalCustDoc().value.trim();
+      const notes = dom.modalCustNotes().value.trim();
+      
+      if (!name || !docNo) {
+        showError('Nama dan Nomor Dokumen wajib diisi.');
+        return;
+      }
+      
+      let customerData;
+      
+      if (customerType === 'address') {
+        const address = dom.modalCustAddr().value.trim();
+        if (!address) {
+          showError('Alamat customer wajib diisi.');
+          return;
+        }
+        customerData = { name, docNo, address, notes };
+      } else {
+        const lat = parseFloat(dom.modalCustLat().value.trim());
+        const lng = parseFloat(dom.modalCustLng().value.trim());
+        
+        if (isNaN(lat) || isNaN(lng)) {
+          showError('Latitude dan Longitude wajib diisi dengan angka yang valid.');
+          return;
+        }
+        
+        if (lat < -90 || lat > 90 || lng < -180 || lng > 180) {
+          showError('Koordinat tidak valid. Latitude harus antara -90 sampai 90, Longitude harus antara -180 sampai 180.');
+          return;
+        }
+        
+        customerData = { name, docNo, lat, lng, notes };
+      }
+      
+      // Simpan atau update customer
+      if (editingCustomerIndex !== null) {
+        customersData[customerType][editingCustomerIndex] = customerData;
+      } else {
+        customersData[customerType].push(customerData);
+      }
+      
+      // Render ulang list
+      renderCustomerList(customerType);
+      
+      // Tutup modal
+      closeCustomerModal();
+      
+      showSuccess('Customer berhasil disimpan.');
     }
 
     function addCustomerItem(prefill = { name: '', docNo: '', address: '', notes: '' }) {
@@ -1880,8 +2527,7 @@
         const rows = jsonData.slice(1);
         
         // Clear existing customers
-        dom.customers().innerHTML = '';
-        customerAutocompletes = [];
+        customersData.address = [];
         
         // Process each row
         let successCount = 0;
@@ -1896,7 +2542,7 @@
           }
           
           // Pastikan array memiliki minimal 3 elemen (notes opsional)
-          while (row.length < 3) {
+          while (row.length < 4) {
             row.push('');
           }
           
@@ -1917,9 +2563,12 @@
             continue;
           }
           
-          addCustomerItem({ name, docNo, address, notes });
+          customersData.address.push({ name, docNo, address, notes });
           successCount++;
         }
+        
+        // Render ulang list
+        renderCustomerList('address');
         
         if (successCount > 0) {
           showSuccess(`Berhasil mengimpor ${successCount} customer${successCount > 1 ? '' : ''}.${errorCount > 0 ? ` ${errorCount} baris dilewati karena data tidak lengkap.` : ''}`);
@@ -1959,7 +2608,7 @@
         const rows = jsonData.slice(1);
         
         // Clear existing customers
-        document.getElementById('customersCoord').innerHTML = '';
+        customersData.coordinates = [];
         
         // Process each row
         let successCount = 0;
@@ -1973,8 +2622,8 @@
             continue;
           }
           
-          // Pastikan array memiliki minimal 4 elemen (notes opsional)
-          while (row.length < 4) {
+          // Pastikan array memiliki minimal 5 elemen (notes opsional)
+          while (row.length < 5) {
             row.push('');
           }
           
@@ -2007,9 +2656,12 @@
             continue;
           }
           
-          addCustomerItemCoord({ name, docNo, lat: lat.toString(), lng: lng.toString(), notes });
+          customersData.coordinates.push({ name, docNo, lat, lng, notes });
           successCount++;
         }
+        
+        // Render ulang list
+        renderCustomerList('coordinates');
         
         if (successCount > 0) {
           showSuccess(`Berhasil mengimpor ${successCount} customer${successCount > 1 ? '' : ''}.${errorCount > 0 ? ` ${errorCount} baris dilewati karena data tidak lengkap atau tidak valid.` : ''}`);
@@ -2280,23 +2932,11 @@
       let resolvedCustomers = [];
 
       if (activeTab === 'address') {
-        // Mode alamat lengkap
-        customerItems = Array.from(dom.customers().querySelectorAll('.customer-item'));
-        if (customerItems.length === 0) {
-          showError('Tambahkan minimal 1 customer.');
-          return;
-        }
-
-        const customersInput = customerItems.map(item => {
-          const name = item.querySelector('input[id^="custName-"]').value.trim();
-          const docNo = item.querySelector('input[id^="custDoc-"]').value.trim();
-          const address = item.querySelector('input[id^="custAddr-"]').value.trim();
-          const notes = item.querySelector('input[id^="custNotes-"]') ? item.querySelector('input[id^="custNotes-"]').value.trim() : '';
-          return { name, docNo, address, notes };
-        }).filter(c => c.address);
+        // Mode alamat lengkap - baca dari customersData
+        const customersInput = customersData.address.filter(c => c.address);
 
         if (customersInput.length === 0) {
-          showError('Setidaknya satu customer memiliki alamat yang valid.');
+          showError('Tambahkan minimal 1 customer dengan alamat yang valid.');
           return;
         }
         const missingDoc = customersInput.find(c => !c.docNo);
@@ -2307,24 +2947,25 @@
 
         dom.processBtn().disabled = true;
         dom.processBtn().textContent = 'Memproses...';
+        showLoading();
 
         try {
           const originResolved = await getStoreOrigin();
           const origin = originResolved.location;
 
+          // Geocode setiap customer dari customersData
           for (let i = 0; i < customersInput.length; i++) {
-            const addrInput = customerItems[i].querySelector('input[id^="custAddr-"]');
-            const nameInput = customerItems[i].querySelector('input[id^="custName-"]');
-            const docInput = customerItems[i].querySelector('input[id^="custDoc-"]');
-            const notesInput = customerItems[i].querySelector('input[id^="custNotes-"]');
-            const ac = customerAutocompletes.find(a => a.input === addrInput);
-            const resolved = await getPlaceOrGeocode(addrInput, ac);
+            const customer = customersInput[i];
+            // Buat input dummy untuk geocoding
+            const dummyInput = document.createElement('input');
+            dummyInput.value = customer.address;
+            const resolved = await getPlaceOrGeocode(dummyInput, null);
             resolvedCustomers.push({
-              name: nameInput.value,
-              docNo: docInput.value,
+              name: customer.name,
+              docNo: customer.docNo,
               formatted: resolved.formatted,
               location: resolved.location,
-              notes: notesInput ? notesInput.value.trim() : '',
+              notes: customer.notes || '',
             });
           }
 
@@ -2333,28 +2974,16 @@
           console.error(err);
           showError(err.message || 'Gagal menghitung rute. Periksa input dan API key.');
         } finally {
+          hideLoading();
           dom.processBtn().disabled = false;
           dom.processBtn().textContent = 'Proses Rute';
         }
       } else if (activeTab === 'coordinates') {
-        // Mode koordinat
-        customerItems = Array.from(document.getElementById('customersCoord').querySelectorAll('.customer-item'));
-        if (customerItems.length === 0) {
-          showError('Tambahkan minimal 1 customer.');
-          return;
-        }
-
-        const customersInput = customerItems.map(item => {
-          const name = item.querySelector('input[id^="custCoordName-"]').value.trim();
-          const docNo = item.querySelector('input[id^="custCoordDoc-"]').value.trim();
-          const lat = parseFloat(item.querySelector('input[id^="custCoordLat-"]').value.trim());
-          const lng = parseFloat(item.querySelector('input[id^="custCoordLng-"]').value.trim());
-          const notes = item.querySelector('input[id^="custCoordNotes-"]') ? item.querySelector('input[id^="custCoordNotes-"]').value.trim() : '';
-          return { name, docNo, lat, lng, notes };
-        }).filter(c => !isNaN(c.lat) && !isNaN(c.lng) && c.lat !== 0 && c.lng !== 0);
+        // Mode koordinat - baca dari customersData
+        const customersInput = customersData.coordinates.filter(c => !isNaN(c.lat) && !isNaN(c.lng) && c.lat !== 0 && c.lng !== 0);
 
         if (customersInput.length === 0) {
-          showError('Setidaknya satu customer memiliki koordinat yang valid.');
+          showError('Tambahkan minimal 1 customer dengan koordinat yang valid.');
           return;
         }
         const missingDoc = customersInput.find(c => !c.docNo);
@@ -2372,6 +3001,7 @@
 
         dom.processBtn().disabled = true;
         dom.processBtn().textContent = 'Memproses...';
+        showLoading();
 
         try {
           const originResolved = await getStoreOrigin();
@@ -2407,6 +3037,7 @@
           console.error(err);
           showError(err.message || 'Gagal menghitung rute. Periksa input dan API key.');
         } finally {
+          hideLoading();
           dom.processBtn().disabled = false;
           dom.processBtn().textContent = 'Proses Rute';
         }
@@ -2523,6 +3154,14 @@
       route.overview_path.forEach(p => bounds.extend(p));
       map.fitBounds(bounds);
 
+      // Scroll ke map setelah rute dirender
+      setTimeout(() => {
+        const mapElement = document.getElementById('map');
+        if (mapElement) {
+          mapElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+      }, 300);
+
       // Mulai animasi truk setelah polyline selesai di-render
       setTimeout(() => {
         animateTruckAlongRoute(route);
@@ -2541,11 +3180,16 @@
       dom.storeAddress().style.backgroundColor = '#fff';
       dom.storeAddress().style.cursor = 'text';
       if (isStoreLocked) toggleStoreLock();
-      // Reset kedua tab
-      dom.customers().innerHTML = '';
-      document.getElementById('customersCoord').innerHTML = '';
+      // Reset customersData
+      customersData = {
+        address: [],
+        coordinates: []
+      };
       // Reset ke tab pertama
       switchFormTab('address');
+      // Render ulang list customer (akan menampilkan pesan kosong)
+      renderCustomerList('address');
+      renderCustomerList('coordinates');
       dom.summaryButtonContainer().classList.add('hidden');
       clearMarkers();
       clearPolylines();
@@ -2998,18 +3642,33 @@
         componentRestrictions: { country: ['id'] },
       });
 
-      addCustomerItem();
-      addCustomerItemCoord(); // Tambahkan satu customer default di tab koordinat
+      // Render list customer kosong
+      renderCustomerList('address');
+      renderCustomerList('coordinates');
 
       // Load store database
       loadStoreDatabase();
 
       dom.lockStoreBtn().addEventListener('click', toggleStoreLock);
       dom.storeSelect().addEventListener('change', handleStoreSelection);
-      dom.addCustomerBtn().addEventListener('click', () => addCustomerItem());
-      document.getElementById('addCustomerCoordBtn').addEventListener('click', () => addCustomerItemCoord());
+      dom.addCustomerBtn().addEventListener('click', () => openCustomerModal('address'));
+      document.getElementById('addCustomerCoordBtn').addEventListener('click', () => openCustomerModal('coordinates'));
       dom.processBtn().addEventListener('click', processRoute);
       dom.resetBtn().addEventListener('click', resetAll);
+      
+      // Customer modal event listeners
+      dom.customerForm().addEventListener('submit', (e) => {
+        e.preventDefault();
+        saveCustomerFromModal();
+      });
+      dom.closeCustomerModal().addEventListener('click', closeCustomerModal);
+      dom.cancelCustomerBtn().addEventListener('click', closeCustomerModal);
+      // Close modal saat klik di luar modal
+      dom.customerModal().addEventListener('click', (e) => {
+        if (e.target === dom.customerModal()) {
+          closeCustomerModal();
+        }
+      });
       
       // Upload dan Download Template event listeners
       document.getElementById('downloadTemplateAddressBtn').addEventListener('click', downloadTemplateAddress);
@@ -3087,5 +3746,3 @@
   <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAxWsTliFhn3XDDCyjOuB4N2DYAwgksfBw&libraries=places,geometry&callback=initMap" async defer></script>
 </body>
 </html>
-
-
