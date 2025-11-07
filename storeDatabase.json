@@ -176,10 +176,10 @@
   },
   {
     "store": "10072 - Jababeka - BKS",
-    "address": "Mekarmukti, Kec. Cikarang Utara, Kabupaten Bekasi, Jawa Barat 17530",
+    "address": "P55C+JJR, Jl. H.Usmar Ismail, Mekarmukti, Kec. Cikarang Utara, Kabupaten Bekasi, Jawa Barat 17530",
     "postal_code": "17530",
-    "latitude": -6.29103681464032,
-    "longitude": 107.17173785923458
+    "latitude": -6.290834357101643,
+    "longitude": 107.17170408990745
   },
   {
     "store": "11000 - Tallasa City Makassar - MKS",
@@ -340,7 +340,7 @@
     "address": "Jl. Ringroad Utara No. 11, Gondangan, Ringinsari, Maguwoharjo, Kec. Depok, Kabupaten Sleman, Daerah Istimewa Yogyakarta",
     "postal_code": "55281",
     "latitude": -7.773575980523471,
-    "longitude": 110.43106800989422
+    "longitude": (110.43106800989422
   },
   {
     "store": "80002 - Solo Baru - SLO",
@@ -363,7 +363,7 @@
     "latitude": -6.8787205350444935,
     "longitude": 109.12619328289585
   },
-  {
+  {)
     "store": "80008 - Purwokerto - PWT",
     "address": "Jl. Suparjo Rustam, Pesuruhan, Sokaraja Kulon, Kec. Sokaraja, Kabupaten Banyumas, Jawa Tengah",
     "postal_code": "53146",
