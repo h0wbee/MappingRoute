@@ -853,6 +853,35 @@
       display: none;
     }
     
+    /* CSS untuk Google Places Autocomplete dropdown */
+    .pac-container {
+      z-index: 3000 !important;
+      border-radius: 12px !important;
+      box-shadow: var(--shadow-xl) !important;
+      border: 2px solid #e2e8f0 !important;
+      margin-top: 4px !important;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif !important;
+    }
+    .pac-item {
+      padding: 12px 16px !important;
+      cursor: pointer !important;
+      border-bottom: 1px solid #f1f5f9 !important;
+      transition: background-color 0.2s ease !important;
+    }
+    .pac-item:hover {
+      background-color: #f8fafc !important;
+    }
+    .pac-item-selected {
+      background-color: rgba(99, 102, 241, 0.1) !important;
+    }
+    .pac-icon {
+      margin-right: 8px !important;
+    }
+    .pac-matched {
+      font-weight: 600 !important;
+      color: var(--primary) !important;
+    }
+    
     /* Tab switcher styles untuk form panel */
     .form-tabs {
       display: flex;
@@ -905,6 +934,41 @@
     }
     .form-tab-content.active {
       display: block;
+    }
+    
+    /* CSS untuk modal customer */
+    .modal-content.customer-modal {
+      max-width: 600px;
+    }
+    .modal-hybrid-toggle {
+      display: none;
+    }
+    .modal-hybrid-toggle-container {
+      gap: 16px;
+      margin-top: 8px;
+    }
+    .modal-radio-label {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      cursor: pointer;
+      font-weight: normal;
+    }
+    .modal-coord-fields {
+      display: none;
+    }
+    .modal-address-fields {
+      display: block;
+    }
+    .modal-form-actions {
+      justify-content: flex-end;
+      margin-top: 20px;
+    }
+    .hidden {
+      display: none !important;
+    }
+    .visible {
+      display: block !important;
     }
     
     /* Download buttons styles */
@@ -1350,7 +1414,7 @@
   
   <!-- Modal untuk Form Customer -->
   <div id="customerModal" class="modal">
-    <div class="modal-content" style="max-width: 600px;">
+    <div class="modal-content customer-modal">
       <div class="modal-header">
         <h2 id="customerModalTitle">Tambah Customer</h2>
         <button id="closeCustomerModal" class="close-modal">&times;</button>
@@ -1365,15 +1429,31 @@
             <label for="modalCustDoc">Nomor Dokumen</label>
             <input id="modalCustDoc" type="text" placeholder="Contoh: DO-2025-0001" required>
           </div>
+          <!-- Toggle untuk mode hybrid (hanya muncul saat mode hybrid) -->
+          <div id="modalHybridToggle" class="modal-hybrid-toggle">
+            <div class="row">
+              <label>Pilih Tipe Input</label>
+              <div class="inline modal-hybrid-toggle-container">
+                <label class="modal-radio-label">
+                  <input type="radio" name="hybridInputType" value="address" id="hybridInputAddress" checked>
+                  <span>📍 Alamat Lengkap</span>
+                </label>
+                <label class="modal-radio-label">
+                  <input type="radio" name="hybridInputType" value="coordinates" id="hybridInputCoordinates">
+                  <span>🌐 Koordinat (Lat/Lng)</span>
+                </label>
+              </div>
+            </div>
+          </div>
           <!-- Form fields untuk tab alamat -->
-          <div id="modalAddressFields">
+          <div id="modalAddressFields" class="modal-address-fields">
             <div class="row">
               <label for="modalCustAddr">Alamat Customer</label>
               <input id="modalCustAddr" type="text" placeholder="Ketik alamat atau paste URL Google Maps...">
             </div>
           </div>
           <!-- Form fields untuk tab koordinat -->
-          <div id="modalCoordFields" style="display: none;">
+          <div id="modalCoordFields" class="modal-coord-fields">
             <div class="row">
               <label for="modalCustLat">Latitude</label>
               <input id="modalCustLat" type="number" step="any" placeholder="-6.2088">
@@ -1387,7 +1467,7 @@
             <label for="modalCustNotes">Notes</label>
             <input id="modalCustNotes" type="text" placeholder="Catatan tambahan (opsional)">
           </div>
-          <div class="inline" style="justify-content: flex-end; margin-top: 20px;">
+          <div class="inline modal-form-actions">
             <button type="button" id="cancelCustomerBtn" class="secondary">Batal</button>
             <button type="submit" id="saveCustomerBtn" class="primary">Simpan</button>
           </div>
@@ -1423,6 +1503,7 @@
       <div class="form-tabs">
         <button class="form-tab-btn active" data-form-tab="address">📍 Alamat Lengkap</button>
         <button class="form-tab-btn" data-form-tab="coordinates">🌐 Koordinat (Lat/Lng)</button>
+        <button class="form-tab-btn" data-form-tab="hybrid">🔀 Hybrid (Alamat + Koordinat)</button>
       </div>
 
       <!-- Tab Content: Alamat Lengkap -->
@@ -1461,6 +1542,27 @@
         </div>
         <div class="muted muted-note">
           Masukkan koordinat dalam format: Latitude, Longitude (contoh: -6.2088, 106.8456)
+        </div>
+      </div>
+
+      <!-- Tab Content: Hybrid (Alamat + Koordinat) -->
+      <div id="hybridTab" class="form-tab-content">
+        <div class="row">
+          <div class="inline inline-between">
+            <label>Daftar Customer (Hybrid)</label>
+            <div class="upload-actions">
+              <button id="downloadTemplateHybridBtn" class="ghost" type="button" title="Download Template Excel">📥 Template Excel</button>
+              <button id="uploadHybridBtn" class="ghost" type="button">📤 Upload Excel</button>
+              <input type="file" id="uploadHybridFile" accept=".xlsx,.xls" class="file-input-hidden">
+            </div>
+          </div>
+          <div id="customersHybrid" class="customers"></div>
+          <div class="add-customer-btn-container">
+            <button id="addCustomerHybridBtn" class="ghost">+ Tambah Customer</button>
+          </div>
+        </div>
+        <div class="muted muted-note">
+          Anda dapat menggunakan alamat lengkap atau koordinat untuk setiap customer. Pilih salah satu saat menambah customer.
         </div>
       </div>
 
@@ -1987,25 +2089,69 @@
     // Array untuk menyimpan data customer
     let customersData = {
       address: [],
-      coordinates: []
+      coordinates: [],
+      hybrid: []
     };
     let editingCustomerIndex = null;
-    let editingCustomerType = null; // 'address' atau 'coordinates'
+    let editingCustomerType = null; // 'address', 'coordinates', atau 'hybrid'
 
     // Fungsi untuk update modal fields berdasarkan tab aktif
     function updateCustomerModalFields(tabName) {
+      const modalHybridToggle = document.getElementById('modalHybridToggle');
+      const modalAddressFields = dom.modalAddressFields();
+      const modalCoordFields = dom.modalCoordFields();
+      
       if (tabName === 'address') {
-        dom.modalAddressFields().style.display = 'block';
-        dom.modalCoordFields().style.display = 'none';
+        modalHybridToggle.classList.add('modal-hybrid-toggle');
+        modalAddressFields.classList.remove('hidden');
+        modalAddressFields.classList.add('visible');
+        modalCoordFields.classList.add('modal-coord-fields');
         dom.modalCustAddr().required = true;
         dom.modalCustLat().required = false;
         dom.modalCustLng().required = false;
-      } else {
-        dom.modalAddressFields().style.display = 'none';
-        dom.modalCoordFields().style.display = 'block';
+      } else if (tabName === 'coordinates') {
+        modalHybridToggle.classList.add('modal-hybrid-toggle');
+        modalAddressFields.classList.add('hidden');
+        modalAddressFields.classList.remove('visible');
+        modalCoordFields.classList.remove('modal-coord-fields');
+        modalCoordFields.classList.remove('hidden');
+        modalCoordFields.classList.add('visible');
         dom.modalCustAddr().required = false;
         dom.modalCustLat().required = true;
         dom.modalCustLng().required = true;
+      } else if (tabName === 'hybrid') {
+        // Mode hybrid: tampilkan toggle dan kedua field
+        modalHybridToggle.classList.remove('modal-hybrid-toggle');
+        // Default ke alamat
+        const hybridInputType = document.querySelector('input[name="hybridInputType"]:checked')?.value || 'address';
+        if (hybridInputType === 'address') {
+          modalAddressFields.classList.remove('hidden');
+          modalAddressFields.classList.add('visible');
+          modalCoordFields.classList.add('modal-coord-fields');
+          dom.modalCustAddr().required = true;
+          dom.modalCustLat().required = false;
+          dom.modalCustLng().required = false;
+          // Setup autocomplete setelah field terlihat
+          setTimeout(() => {
+            setupAddressAutocomplete();
+          }, 200);
+        } else {
+          modalAddressFields.classList.add('hidden');
+          modalAddressFields.classList.remove('visible');
+          modalCoordFields.classList.remove('modal-coord-fields');
+          modalCoordFields.classList.remove('hidden');
+          modalCoordFields.classList.add('visible');
+          dom.modalCustAddr().required = false;
+          dom.modalCustLat().required = true;
+          dom.modalCustLng().required = true;
+        }
+      }
+      
+      // Setup autocomplete untuk tab address
+      if (tabName === 'address') {
+        setTimeout(() => {
+          setupAddressAutocomplete();
+        }, 200);
       }
     }
 
@@ -2032,9 +2178,23 @@
         
         if (customerType === 'address') {
           dom.modalCustAddr().value = customer.address || '';
-        } else {
+        } else if (customerType === 'coordinates') {
           dom.modalCustLat().value = customer.lat || '';
           dom.modalCustLng().value = customer.lng || '';
+        } else if (customerType === 'hybrid') {
+          // Untuk hybrid, tentukan apakah menggunakan alamat atau koordinat
+          if (customer.address) {
+            // Menggunakan alamat
+            document.getElementById('hybridInputAddress').checked = true;
+            dom.modalCustAddr().value = customer.address || '';
+            updateCustomerModalFields('hybrid');
+          } else if (customer.lat !== undefined && customer.lng !== undefined) {
+            // Menggunakan koordinat
+            document.getElementById('hybridInputCoordinates').checked = true;
+            dom.modalCustLat().value = customer.lat || '';
+            dom.modalCustLng().value = customer.lng || '';
+            updateCustomerModalFields('hybrid');
+          }
         }
         
         dom.customerModalTitle().textContent = 'Edit Customer';
@@ -2047,11 +2207,64 @@
       modal.classList.add('show');
       document.body.style.overflow = 'hidden';
       
-      // Setup autocomplete untuk alamat jika tab address
-      if (customerType === 'address') {
-        setTimeout(() => {
+      // Setup autocomplete untuk alamat jika tab address atau hybrid dengan alamat
+      // Delay lebih lama untuk memastikan modal sudah ter-render sepenuhnya dan input field visible
+      setTimeout(() => {
+        // Pastikan modal sudah ter-render
+        const modalContent = document.querySelector('.modal-content');
+        if (!modalContent || !modalContent.offsetParent) {
+          // Jika modal belum ter-render, coba lagi
+          setTimeout(() => {
+            if (customerType === 'address') {
+              setupAddressAutocomplete();
+            } else if (customerType === 'hybrid') {
+              const hybridInputType = document.querySelector('input[name="hybridInputType"]:checked')?.value || 'address';
+              if (hybridInputType === 'address') {
+                setupAddressAutocomplete();
+              }
+            }
+          }, 300);
+          return;
+        }
+        
+        if (customerType === 'address') {
           setupAddressAutocomplete();
-        }, 100);
+        } else if (customerType === 'hybrid') {
+          // Untuk hybrid, setup autocomplete jika pilih alamat
+          const hybridInputType = document.querySelector('input[name="hybridInputType"]:checked')?.value || 'address';
+          if (hybridInputType === 'address') {
+            setupAddressAutocomplete();
+          }
+        }
+      }, 500);
+      
+      // Event listener untuk toggle hybrid input type menggunakan event delegation
+      // untuk menghindari masalah dengan event listener yang duplikat
+      if (customerType === 'hybrid') {
+        // Hapus event listener lama jika ada
+        const form = dom.customerForm();
+        if (form._hybridToggleHandler) {
+          form.removeEventListener('change', form._hybridToggleHandler);
+        }
+        
+        // Buat handler baru
+        const hybridToggleHandler = (e) => {
+          if (e.target && e.target.name === 'hybridInputType') {
+            updateCustomerModalFields('hybrid');
+            // Setup autocomplete jika pilih alamat dengan delay untuk memastikan field terlihat
+            if (e.target.value === 'address') {
+              setTimeout(() => {
+                setupAddressAutocomplete();
+              }, 300);
+            }
+          }
+        };
+        
+        // Simpan reference handler
+        form._hybridToggleHandler = hybridToggleHandler;
+        
+        // Gunakan event delegation pada form
+        form.addEventListener('change', hybridToggleHandler);
       }
     }
 
@@ -2062,33 +2275,144 @@
       document.body.style.overflow = 'auto';
       editingCustomerIndex = null;
       editingCustomerType = null;
+      
+      // Bersihkan event listener hybrid toggle jika ada
+      const form = dom.customerForm();
+      if (form._hybridToggleHandler) {
+        form.removeEventListener('change', form._hybridToggleHandler);
+        delete form._hybridToggleHandler;
+      }
+      
+      // Bersihkan autocomplete jika ada
+      const addrInput = dom.modalCustAddr();
+      if (addrInput && addrInput._autocomplete) {
+        try {
+          google.maps.event.clearInstanceListeners(addrInput._autocomplete);
+        } catch (e) {
+          // Ignore error
+        }
+        delete addrInput._autocomplete;
+      }
+      
+      // Reset form
       dom.customerForm().reset();
     }
 
     // Fungsi untuk setup autocomplete pada input alamat di modal
-    function setupAddressAutocomplete() {
+    function setupAddressAutocomplete(retryCount = 0) {
       const addrInput = dom.modalCustAddr();
+      
+      // Pastikan input ada di DOM
+      if (!addrInput) {
+        console.warn('Input alamat tidak ditemukan');
+        if (retryCount < 3) {
+          setTimeout(() => setupAddressAutocomplete(retryCount + 1), 200);
+        }
+        return;
+      }
+      
+      // Pastikan input terlihat dan tidak disabled
+      const computedStyle = window.getComputedStyle(addrInput);
+      const isVisible = computedStyle.display !== 'none' && 
+                       computedStyle.visibility !== 'hidden' &&
+                       addrInput.offsetParent !== null;
+      
+      if (!isVisible) {
+        console.warn('Input alamat tidak terlihat, menunda setup autocomplete');
+        if (retryCount < 3) {
+          setTimeout(() => setupAddressAutocomplete(retryCount + 1), 200);
+        }
+        return;
+      }
+      
+      // Pastikan input tidak disabled atau readonly
+      if (addrInput.disabled || addrInput.readOnly) {
+        addrInput.disabled = false;
+        addrInput.readOnly = false;
+      }
+      
       // Hapus autocomplete yang sudah ada jika ada
       if (addrInput._autocomplete) {
-        google.maps.event.clearInstanceListeners(addrInput._autocomplete);
+        try {
+          google.maps.event.clearInstanceListeners(addrInput._autocomplete);
+        } catch (e) {
+          // Ignore error jika autocomplete sudah dihapus
+        }
+        delete addrInput._autocomplete;
       }
       
-      const autocomplete = new google.maps.places.Autocomplete(addrInput, {
-        fields: ['geometry', 'formatted_address', 'name', 'address_components'],
-        types: ['geocode'],
-      });
-      
-      if (cityPlace && cityPlace.geometry && cityPlace.geometry.viewport) {
-        autocomplete.setBounds(cityPlace.geometry.viewport);
-        autocomplete.setOptions({ strictBounds: false });
+      // Hapus event listener 'input' yang lama jika ada
+      if (addrInput._inputListener) {
+        addrInput.removeEventListener('input', addrInput._inputListener);
+        delete addrInput._inputListener;
       }
       
-      addrInput._autocomplete = autocomplete;
+      try {
+        // Pastikan Google Maps API sudah loaded
+        if (typeof google === 'undefined' || !google.maps || !google.maps.places) {
+          console.error('Google Maps Places API belum dimuat');
+          if (retryCount < 5) {
+            setTimeout(() => setupAddressAutocomplete(retryCount + 1), 300);
+          }
+          return;
+        }
+        
+        // Pastikan input memiliki position yang benar untuk dropdown
+        const inputStyle = window.getComputedStyle(addrInput);
+        if (inputStyle.position === 'static') {
+          addrInput.style.position = 'relative';
+        }
+        
+        // Buat autocomplete
+        const autocomplete = new google.maps.places.Autocomplete(addrInput, {
+          fields: ['geometry', 'formatted_address', 'name', 'address_components'],
+          types: ['geocode'],
+          componentRestrictions: { country: ['id'] },
+        });
+        
+        // Set bounds jika ada cityPlace
+        if (cityPlace && cityPlace.geometry && cityPlace.geometry.viewport) {
+          autocomplete.setBounds(cityPlace.geometry.viewport);
+          autocomplete.setOptions({ strictBounds: false });
+        }
+        
+        // Simpan reference ke autocomplete
+        addrInput._autocomplete = autocomplete;
+        
+        // Event listener untuk ketika place dipilih
+        autocomplete.addListener('place_changed', () => {
+          const place = autocomplete.getPlace();
+          if (place && place.formatted_address) {
+            addrInput.value = place.formatted_address;
+          }
+        });
+        
+        // Google Places Autocomplete sudah menangani input event secara otomatis
+        // Tidak perlu menambahkan event listener manual yang bisa menyebabkan infinite loop
+        
+        console.log('Autocomplete berhasil di-setup untuk input alamat');
+        
+      } catch (error) {
+        console.error('Error setting up autocomplete:', error);
+        if (retryCount < 3) {
+          setTimeout(() => setupAddressAutocomplete(retryCount + 1), 200);
+        }
+      }
     }
 
     // Fungsi untuk render list customer yang compact
     function renderCustomerList(type) {
-      const container = type === 'address' ? dom.customers() : document.getElementById('customersCoord');
+      let container;
+      if (type === 'address') {
+        container = dom.customers();
+      } else if (type === 'coordinates') {
+        container = document.getElementById('customersCoord');
+      } else if (type === 'hybrid') {
+        container = document.getElementById('customersHybrid');
+      }
+      
+      if (!container) return;
+      
       container.innerHTML = '';
       
       const customers = customersData[type];
@@ -2128,9 +2452,19 @@
         listItem.dataset.index = index;
         listItem.dataset.type = type;
         
-        const addressDisplay = type === 'address' 
-          ? customer.address 
-          : `${customer.lat || ''}, ${customer.lng || ''}`;
+        let addressDisplay = '';
+        if (type === 'address') {
+          addressDisplay = customer.address;
+        } else if (type === 'coordinates') {
+          addressDisplay = `${customer.lat || ''}, ${customer.lng || ''}`;
+        } else if (type === 'hybrid') {
+          // Untuk hybrid, tampilkan alamat jika ada, atau koordinat jika tidak ada alamat
+          if (customer.address) {
+            addressDisplay = `📍 ${customer.address}`;
+          } else if (customer.lat !== undefined && customer.lng !== undefined) {
+            addressDisplay = `🌐 ${customer.lat}, ${customer.lng}`;
+          }
+        }
         
         listItem.innerHTML = `
           <div class="customer-list-drag-handle" title="Drag untuk mengubah urutan">☰</div>
@@ -2271,7 +2605,7 @@
     // Fungsi untuk menyimpan customer dari modal
     function saveCustomerFromModal() {
       const activeTab = editingCustomerType || document.querySelector('.form-tab-btn.active').dataset.formTab;
-      const customerType = activeTab === 'address' ? 'address' : 'coordinates';
+      const customerType = activeTab;
       
       const name = dom.modalCustName().value.trim();
       const docNo = dom.modalCustDoc().value.trim();
@@ -2291,7 +2625,7 @@
           return;
         }
         customerData = { name, docNo, address, notes };
-      } else {
+      } else if (customerType === 'coordinates') {
         const lat = parseFloat(dom.modalCustLat().value.trim());
         const lng = parseFloat(dom.modalCustLng().value.trim());
         
@@ -2306,6 +2640,33 @@
         }
         
         customerData = { name, docNo, lat, lng, notes };
+      } else if (customerType === 'hybrid') {
+        // Untuk hybrid, cek apakah menggunakan alamat atau koordinat
+        const hybridInputType = document.querySelector('input[name="hybridInputType"]:checked')?.value || 'address';
+        
+        if (hybridInputType === 'address') {
+          const address = dom.modalCustAddr().value.trim();
+          if (!address) {
+            showError('Alamat customer wajib diisi.');
+            return;
+          }
+          customerData = { name, docNo, address, notes };
+        } else {
+          const lat = parseFloat(dom.modalCustLat().value.trim());
+          const lng = parseFloat(dom.modalCustLng().value.trim());
+          
+          if (isNaN(lat) || isNaN(lng)) {
+            showError('Latitude dan Longitude wajib diisi dengan angka yang valid.');
+            return;
+          }
+          
+          if (lat < -90 || lat > 90 || lng < -180 || lng > 180) {
+            showError('Koordinat tidak valid. Latitude harus antara -90 sampai 90, Longitude harus antara -180 sampai 180.');
+            return;
+          }
+          
+          customerData = { name, docNo, lat, lng, notes };
+        }
       }
       
       // Simpan atau update customer
@@ -2669,6 +3030,162 @@
           setTimeout(() => clearError(), 5000);
         } else {
           showError(`Tidak ada data yang berhasil diimpor. ${errorCount > 0 ? `${errorCount} baris ditemukan tetapi data tidak lengkap atau tidak valid.` : 'Pastikan format file sesuai template (Kolom: Nama Customer, Nomor Dokumen, Latitude, Longitude).'}`);
+        }
+        
+      } catch (error) {
+        console.error('Error processing file:', error);
+        showError('Gagal membaca file Excel. Pastikan file tidak rusak dan format sesuai template. Error: ' + error.message);
+      }
+    }
+
+    // Fungsi untuk download template Excel - Hybrid
+    function downloadTemplateHybrid() {
+      const wb = XLSX.utils.book_new();
+      
+      // Header untuk template hybrid (bisa alamat ATAU koordinat)
+      const templateData = [
+        ['Nama Customer', 'Nomor Dokumen', 'Alamat Customer', 'Latitude', 'Longitude', 'Notes'],
+        ['Contoh Customer 1', 'DO-2025-0001', 'Jl. Sudirman No.1, Jakarta Pusat', '', '', 'Catatan contoh 1'],
+        ['Contoh Customer 2', 'DO-2025-0002', '', -6.2088, 106.8456, 'Catatan contoh 2'],
+        ['Contoh Customer 3', 'DO-2025-0003', 'Jl. Thamrin No.10, Jakarta Pusat', '', '', 'Catatan contoh 3'],
+      ];
+      
+      const ws = XLSX.utils.aoa_to_sheet(templateData);
+      
+      // Set column widths
+      ws['!cols'] = [
+        { wch: 25 },  // Nama Customer
+        { wch: 20 },  // Nomor Dokumen
+        { wch: 50 },  // Alamat Customer
+        { wch: 15 },  // Latitude
+        { wch: 15 },  // Longitude
+        { wch: 30 }   // Notes
+      ];
+      
+      // Style header row
+      const headerRange = XLSX.utils.decode_range(ws['!ref']);
+      for (let col = headerRange.s.c; col <= headerRange.e.c; col++) {
+        const headerCell = XLSX.utils.encode_cell({ r: 0, c: col });
+        if (!ws[headerCell]) ws[headerCell] = { t: 's', v: '' };
+        ws[headerCell].s = {
+          fill: { fgColor: { rgb: '667EEA' } },
+          font: { bold: true, color: { rgb: 'FFFFFF' } },
+          alignment: { horizontal: 'center', vertical: 'center' }
+        };
+      }
+      
+      XLSX.utils.book_append_sheet(wb, ws, 'Template Customer');
+      
+      // Download file
+      const fileName = `template-customer-hybrid-${new Date().toISOString().split('T')[0]}.xlsx`;
+      XLSX.writeFile(wb, fileName);
+    }
+
+    // Fungsi untuk membaca dan memproses file Excel - Hybrid
+    async function processUploadedHybridFile(file) {
+      try {
+        const data = await file.arrayBuffer();
+        const workbook = XLSX.read(data, { type: 'array' });
+        const firstSheet = workbook.Sheets[workbook.SheetNames[0]];
+        
+        // Gunakan defval untuk menangani sel kosong
+        const jsonData = XLSX.utils.sheet_to_json(firstSheet, { 
+          header: 1, 
+          defval: '',
+          blankrows: false 
+        });
+        
+        console.log('Excel data read (hybrid):', jsonData);
+        
+        if (!jsonData || jsonData.length < 2) {
+          showError('File Excel kosong atau tidak valid. Pastikan ada header dan minimal 1 baris data.');
+          return;
+        }
+        
+        // Skip header row (baris pertama)
+        const rows = jsonData.slice(1);
+        
+        // Clear existing customers
+        customersData.hybrid = [];
+        
+        // Process each row
+        let successCount = 0;
+        let errorCount = 0;
+        
+        for (let i = 0; i < rows.length; i++) {
+          const row = rows[i];
+          
+          // Skip baris kosong atau baris yang semua selnya kosong
+          if (!row || row.length === 0) {
+            continue;
+          }
+          
+          // Pastikan array memiliki minimal 6 elemen (notes opsional)
+          while (row.length < 6) {
+            row.push('');
+          }
+          
+          const name = String(row[0] || '').trim();
+          const docNo = String(row[1] || '').trim();
+          const address = String(row[2] || '').trim();
+          const latStr = String(row[3] || '').trim();
+          const lngStr = String(row[4] || '').trim();
+          const notes = String(row[5] || '').trim(); // Notes opsional
+          
+          // Skip jika semua field kosong (baris kosong)
+          if (!name && !docNo && !address && !latStr && !lngStr) {
+            continue;
+          }
+          
+          // Validasi: minimal harus ada nama dan nomor dokumen
+          if (!name || !docNo) {
+            errorCount++;
+            console.log(`Baris ${i + 2} dilewati - Nama atau Nomor Dokumen kosong:`, { name, docNo });
+            continue;
+          }
+          
+          // Harus punya alamat ATAU koordinat
+          if (!address && (!latStr || !lngStr)) {
+            errorCount++;
+            console.log(`Baris ${i + 2} dilewati - Harus mengisi Alamat atau Koordinat:`, { address, latStr, lngStr });
+            continue;
+          }
+          
+          // Jika ada koordinat, validasi
+          if (latStr || lngStr) {
+            const lat = parseFloat(latStr);
+            const lng = parseFloat(lngStr);
+            
+            if (isNaN(lat) || isNaN(lng)) {
+              errorCount++;
+              console.log(`Baris ${i + 2} dilewati - Koordinat tidak valid:`, { latStr, lngStr });
+              continue;
+            }
+            
+            if (lat < -90 || lat > 90 || lng < -180 || lng > 180) {
+              errorCount++;
+              console.log(`Baris ${i + 2} dilewati - Koordinat di luar range:`, { lat, lng });
+              continue;
+            }
+            
+            // Simpan dengan koordinat
+            customersData.hybrid.push({ name, docNo, lat, lng, notes });
+          } else {
+            // Simpan dengan alamat
+            customersData.hybrid.push({ name, docNo, address, notes });
+          }
+          
+          successCount++;
+        }
+        
+        // Render ulang list
+        renderCustomerList('hybrid');
+        
+        if (successCount > 0) {
+          showSuccess(`Berhasil mengimpor ${successCount} customer${successCount > 1 ? '' : ''}.${errorCount > 0 ? ` ${errorCount} baris dilewati karena data tidak lengkap atau tidak valid.` : ''}`);
+          setTimeout(() => clearError(), 5000);
+        } else {
+          showError(`Tidak ada data yang berhasil diimpor. ${errorCount > 0 ? `${errorCount} baris ditemukan tetapi data tidak lengkap atau tidak valid.` : 'Pastikan format file sesuai template (Kolom: Nama Customer, Nomor Dokumen, Alamat Customer ATAU Latitude+Longitude).'}`);
         }
         
       } catch (error) {
@@ -3042,6 +3559,92 @@
           dom.processBtn().disabled = false;
           dom.processBtn().textContent = 'Proses Rute';
         }
+      } else if (activeTab === 'hybrid') {
+        // Mode hybrid - baca dari customersData.hybrid
+        const customersInput = customersData.hybrid.filter(c => {
+          // Harus punya alamat ATAU koordinat yang valid
+          return (c.address && c.address.trim()) || 
+                 (!isNaN(c.lat) && !isNaN(c.lng) && c.lat !== 0 && c.lng !== 0);
+        });
+
+        if (customersInput.length === 0) {
+          showError('Tambahkan minimal 1 customer dengan alamat atau koordinat yang valid.');
+          return;
+        }
+        const missingDoc = customersInput.find(c => !c.docNo);
+        if (missingDoc) {
+          showError('Nomor dokumen wajib diisi untuk setiap customer.');
+          return;
+        }
+
+        // Validasi koordinat jika ada
+        const invalidCoord = customersInput.find(c => 
+          c.lat !== undefined && c.lng !== undefined && 
+          (c.lat < -90 || c.lat > 90 || c.lng < -180 || c.lng > 180)
+        );
+        if (invalidCoord) {
+          showError('Koordinat tidak valid. Latitude harus antara -90 sampai 90, Longitude harus antara -180 sampai 180.');
+          return;
+        }
+
+        dom.processBtn().disabled = true;
+        dom.processBtn().textContent = 'Memproses...';
+        showLoading();
+
+        try {
+          const originResolved = await getStoreOrigin();
+          const origin = originResolved.location;
+
+          // Process setiap customer - bisa alamat atau koordinat
+          for (let i = 0; i < customersInput.length; i++) {
+            const customer = customersInput[i];
+            
+            if (customer.address && customer.address.trim()) {
+              // Menggunakan alamat
+              const dummyInput = document.createElement('input');
+              dummyInput.value = customer.address;
+              const resolved = await getPlaceOrGeocode(dummyInput, null);
+              resolvedCustomers.push({
+                name: customer.name,
+                docNo: customer.docNo,
+                formatted: resolved.formatted,
+                location: resolved.location,
+                notes: customer.notes || '',
+              });
+            } else if (!isNaN(customer.lat) && !isNaN(customer.lng)) {
+              // Menggunakan koordinat
+              const location = new google.maps.LatLng(customer.lat, customer.lng);
+              
+              // Reverse geocode untuk mendapatkan alamat
+              const geocodeResp = await new Promise((resolve, reject) => {
+                geocoder.geocode({ location: location }, (results, status) => {
+                  if (status === 'OK' && results[0]) {
+                    resolve(results[0]);
+                  } else {
+                    reject(new Error('Gagal mendapatkan alamat untuk koordinat: ' + customer.lat + ', ' + customer.lng));
+                  }
+                });
+              });
+
+              resolvedCustomers.push({
+                name: customer.name,
+                docNo: customer.docNo,
+                formatted: geocodeResp.formatted_address || `${customer.lat}, ${customer.lng}`,
+                location: location,
+                notes: customer.notes || '',
+              });
+            }
+          }
+
+          await processRouteWithCustomers(origin, originResolved.formatted, resolvedCustomers);
+        } catch (err) {
+          console.error(err);
+          showError(err.message || 'Gagal menghitung rute. Periksa input dan API key.');
+        } finally {
+          hideLoading();
+          dom.processBtn().disabled = false;
+          dom.processBtn().textContent = 'Proses Rute';
+        }
       }
     }
 
@@ -3184,13 +3787,15 @@
       // Reset customersData
       customersData = {
         address: [],
-        coordinates: []
+        coordinates: [],
+        hybrid: []
       };
       // Reset ke tab pertama
       switchFormTab('address');
       // Render ulang list customer (akan menampilkan pesan kosong)
       renderCustomerList('address');
       renderCustomerList('coordinates');
+      renderCustomerList('hybrid');
       dom.summaryButtonContainer().classList.add('hidden');
       clearMarkers();
       clearPolylines();
@@ -3646,6 +4251,7 @@
       // Render list customer kosong
       renderCustomerList('address');
       renderCustomerList('coordinates');
+      renderCustomerList('hybrid');
 
       // Load store database
       loadStoreDatabase();
@@ -3654,6 +4260,7 @@
       dom.storeSelect().addEventListener('change', handleStoreSelection);
       dom.addCustomerBtn().addEventListener('click', () => openCustomerModal('address'));
       document.getElementById('addCustomerCoordBtn').addEventListener('click', () => openCustomerModal('coordinates'));
+      document.getElementById('addCustomerHybridBtn').addEventListener('click', () => openCustomerModal('hybrid'));
       dom.processBtn().addEventListener('click', processRoute);
       dom.resetBtn().addEventListener('click', resetAll);
       
@@ -3674,6 +4281,7 @@
       // Upload dan Download Template event listeners
       document.getElementById('downloadTemplateAddressBtn').addEventListener('click', downloadTemplateAddress);
       document.getElementById('downloadTemplateCoordBtn').addEventListener('click', downloadTemplateCoord);
+      document.getElementById('downloadTemplateHybridBtn').addEventListener('click', downloadTemplateHybrid);
       
       // Button upload untuk trigger file input
       document.getElementById('uploadAddressBtn').addEventListener('click', () => {
@@ -3682,6 +4290,10 @@
       
       document.getElementById('uploadCoordBtn').addEventListener('click', () => {
         document.getElementById('uploadCoordFile').click();
+      });
+      
+      document.getElementById('uploadHybridBtn').addEventListener('click', () => {
+        document.getElementById('uploadHybridFile').click();
       });
       
       document.getElementById('uploadAddressFile').addEventListener('change', (e) => {
@@ -3697,6 +4309,15 @@
         const file = e.target.files[0];
         if (file) {
           processUploadedCoordFile(file);
+          // Reset input untuk memungkinkan upload file yang sama lagi
+          e.target.value = '';
+        }
+      });
+      
+      document.getElementById('uploadHybridFile').addEventListener('change', (e) => {
+        const file = e.target.files[0];
+        if (file) {
+          processUploadedHybridFile(file);
           // Reset input untuk memungkinkan upload file yang sama lagi
           e.target.value = '';
         }
@@ -3747,4 +4368,3 @@
   <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAxWsTliFhn3XDDCyjOuB4N2DYAwgksfBw&libraries=places,geometry&callback=initMap" async defer></script>
 </body>
 </html>
-
