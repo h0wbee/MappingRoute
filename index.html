@@ -1501,13 +1501,13 @@
 
       <!-- Tab Switcher -->
       <div class="form-tabs">
-        <button class="form-tab-btn" data-form-tab="address">📍 Alamat Lengkap</button>
+        <button class="form-tab-btn active" data-form-tab="address">📍 Alamat Lengkap</button>
         <button class="form-tab-btn" data-form-tab="coordinates">🌐 Koordinat (Lat/Lng)</button>
-        <button class="form-tab-btn active" data-form-tab="hybrid">🔀 Hybrid (Alamat + Koordinat)</button>
+        <button class="form-tab-btn" data-form-tab="hybrid">🔀 Hybrid (Alamat + Koordinat)</button>
       </div>
 
       <!-- Tab Content: Alamat Lengkap -->
-      <div id="addressTab" class="form-tab-content">
+      <div id="addressTab" class="form-tab-content active">
         <div class="row">
           <div class="inline inline-between">
             <label>Daftar Customer</label>
@@ -1546,7 +1546,7 @@
       </div>
 
       <!-- Tab Content: Hybrid (Alamat + Koordinat) -->
-      <div id="hybridTab" class="form-tab-content active">
+      <div id="hybridTab" class="form-tab-content">
         <div class="row">
           <div class="inline inline-between">
             <label>Daftar Customer (Hybrid)</label>
@@ -1801,35 +1801,7 @@
           waypoints,
         };
         
-        // Konversi reorderedDrops ke format customerInfo untuk error handling
-        const resolvedCustomersFromDrops = reorderedDrops.map((drop, idx) => {
-          let location;
-          if (drop.latitude !== undefined && drop.longitude !== undefined) {
-            location = new google.maps.LatLng(drop.latitude, drop.longitude);
-          } else {
-            // Gunakan waypoint location jika ada
-            location = waypoints[idx]?.location || null;
-          }
-          return {
-            name: drop.name,
-            docNo: drop.docNo,
-            formatted: drop.address,
-            address: drop.address,
-            location: location,
-            lat: drop.latitude,
-            lng: drop.longitude,
-            notes: drop.notes || ''
-          };
-        });
-        
-        // Siapkan informasi customer untuk error handling
-        const customerInfo = {
-          customers: resolvedCustomersFromDrops,
-          order: newOrder || resolvedCustomersFromDrops.map((_, idx) => idx),
-          startIndex: 0
-        };
-        
-        const response = await getDirections(request, customerInfo);
+        const response = await directionsService.route(request);
         
         // Update currentRouteData dengan data baru
         let totalMeters = 0;
@@ -2069,27 +2041,9 @@
 
     function showError(message) {
       const box = dom.errorBox();
-      // Gunakan innerHTML untuk format yang lebih baik, tapi sanitize dulu
-      box.innerHTML = message.split('\n').map(line => {
-        // Escape HTML untuk keamanan
-        const escaped = line.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
-        // Format khusus untuk emoji dan header
-        if (line.trim().startsWith('⚠️') || line.trim().startsWith('💡') || line.trim().startsWith('📋') || line.trim().startsWith('📍')) {
-          return `<div style="margin-top: 8px; font-weight: 600;">${escaped}</div>`;
-        } else if (line.trim().match(/^\d+\./)) {
-          return `<div style="margin-left: 20px; margin-top: 4px;">${escaped}</div>`;
-        } else if (line.trim().startsWith('-')) {
-          return `<div style="margin-left: 20px; margin-top: 2px; font-size: 12px;">${escaped}</div>`;
-        } else {
-          return `<div style="margin-top: 4px;">${escaped}</div>`;
-        }
-      }).join('');
+      box.textContent = message;
       box.classList.remove('hidden', 'success');
       box.classList.add('error');
-      // Scroll ke error box
-      setTimeout(() => {
-        box.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-      }, 100);
     }
 
     function showSuccess(message) {
@@ -2116,197 +2070,6 @@
       const overlay = dom.loadingOverlay();
       overlay.classList.remove('show');
       document.body.style.overflow = '';
-    }
-
-    // Fungsi untuk menginterpretasikan error status dari Google Maps Directions API
-    function interpretDirectionsError(status, request, customerInfo = null) {
-      let errorMessage = '';
-      let suggestions = [];
-      let problemCustomers = [];
-
-      // Jika ada informasi customer, identifikasi customer yang bermasalah
-      if (customerInfo && customerInfo.customers) {
-        const { customers, order, startIndex } = customerInfo;
-        const waypoints = request.waypoints || [];
-        
-        // Untuk ZERO_RESULTS dan NOT_FOUND, identifikasi customer yang bermasalah
-        if (status === 'ZERO_RESULTS' || status === 'NOT_FOUND') {
-          // Tampilkan semua customer dalam batch/request yang bermasalah
-          if (order && customers && order.length > 0) {
-            order.forEach((customerIdx, idx) => {
-              // Pastikan customerIdx valid
-              if (customerIdx >= 0 && customerIdx < customers.length) {
-                const customer = customers[customerIdx];
-                if (customer) {
-                  // Dapatkan koordinat dengan berbagai cara
-                  let coordinates = null;
-                  if (customer.location) {
-                    if (typeof customer.location.lat === 'function') {
-                      coordinates = `${customer.location.lat()}, ${customer.location.lng()}`;
-                    } else if (customer.location.lat && customer.location.lng) {
-                      coordinates = `${customer.location.lat}, ${customer.location.lng}`;
-                    }
-                  } else if (customer.lat !== undefined && customer.lng !== undefined) {
-                    coordinates = `${customer.lat}, ${customer.lng}`;
-                  }
-                  
-                  problemCustomers.push({
-                    index: (startIndex || 0) + idx + 1,
-                    name: customer.name || 'Tanpa Nama',
-                    docNo: customer.docNo || '-',
-                    address: customer.formatted || customer.address || 'Tidak diketahui',
-                    coordinates: coordinates
-                  });
-                }
-              }
-            });
-          } else if (customers && customers.length > 0) {
-            // Jika tidak ada order, gunakan semua customers
-            customers.forEach((customer, idx) => {
-              let coordinates = null;
-              if (customer.location) {
-                if (typeof customer.location.lat === 'function') {
-                  coordinates = `${customer.location.lat()}, ${customer.location.lng()}`;
-                } else if (customer.location.lat && customer.location.lng) {
-                  coordinates = `${customer.location.lat}, ${customer.location.lng}`;
-                }
-              } else if (customer.lat !== undefined && customer.lng !== undefined) {
-                coordinates = `${customer.lat}, ${customer.lng}`;
-              }
-              
-              problemCustomers.push({
-                index: (startIndex || 0) + idx + 1,
-                name: customer.name || 'Tanpa Nama',
-                docNo: customer.docNo || '-',
-                address: customer.formatted || customer.address || 'Tidak diketahui',
-                coordinates: coordinates
-              });
-            });
-          }
-        }
-      }
-
-      switch (status) {
-        case 'ZERO_RESULTS':
-          errorMessage = 'Tidak dapat menemukan rute antara titik asal dan tujuan.';
-          suggestions = [
-            'Pastikan alamat toko (origin) dan alamat customer valid dan dapat diakses',
-            'Periksa apakah ada rute yang dapat dilalui (tidak terputus oleh laut, dll)',
-            'Coba gunakan koordinat yang lebih akurat jika menggunakan mode koordinat',
-            'Pastikan semua alamat berada di wilayah yang sama atau terhubung dengan jalan',
-            'Jika menggunakan mode hybrid, pastikan alamat atau koordinat yang digunakan valid'
-          ];
-          break;
-
-        case 'NOT_FOUND':
-          errorMessage = 'Salah satu atau beberapa alamat tidak ditemukan.';
-          suggestions = [
-            'Periksa kembali alamat toko (origin) - pastikan alamat lengkap dan benar',
-            'Periksa semua alamat customer - pastikan tidak ada typo atau alamat yang tidak valid',
-            'Coba gunakan Google Places Autocomplete untuk memastikan alamat valid',
-            'Jika menggunakan koordinat, pastikan koordinat dalam format yang benar (lat, lng)'
-          ];
-          break;
-
-        case 'OVER_QUERY_LIMIT':
-          errorMessage = 'Batas penggunaan API telah terlampaui.';
-          suggestions = [
-            'Tunggu beberapa saat sebelum mencoba lagi',
-            'Periksa quota API key Anda di Google Cloud Console',
-            'Pertimbangkan untuk upgrade API key atau menunggu reset quota'
-          ];
-          break;
-
-        case 'REQUEST_DENIED':
-          errorMessage = 'Request ditolak oleh Google Maps API.';
-          suggestions = [
-            'Periksa apakah API key valid dan aktif',
-            'Pastikan Directions API sudah diaktifkan di Google Cloud Console',
-            'Periksa apakah ada restriction pada API key yang menghalangi request',
-            'Pastikan billing account sudah diaktifkan jika diperlukan'
-          ];
-          break;
-
-        case 'INVALID_REQUEST':
-          errorMessage = 'Request tidak valid.';
-          suggestions = [
-            'Pastikan semua field wajib sudah diisi (alamat toko dan minimal 1 customer)',
-            'Periksa format koordinat jika menggunakan mode koordinat (harus angka valid)',
-            'Pastikan tidak ada karakter khusus yang tidak valid dalam alamat',
-            'Coba reset form dan input ulang data'
-          ];
-          break;
-
-        default:
-          errorMessage = `Terjadi kesalahan saat menghitung rute (Status: ${status}).`;
-          suggestions = [
-            'Periksa koneksi internet Anda',
-            'Coba refresh halaman dan ulangi proses',
-            'Pastikan API key Google Maps valid dan aktif',
-            'Jika masalah berlanjut, hubungi administrator sistem'
-          ];
-      }
-
-      // Buat pesan error yang informatif
-      let fullMessage = `⚠️ ${errorMessage}\n\n`;
-      
-      // Tambahkan informasi customer yang bermasalah jika ada
-      if (problemCustomers.length > 0) {
-        fullMessage += `🔍 Customer yang Perlu Dicek (${problemCustomers.length} customer):\n\n`;
-        problemCustomers.forEach((customer, idx) => {
-          fullMessage += `📌 Customer #${customer.index} (Baris ${customer.index}):\n`;
-          fullMessage += `   • Nama: ${customer.name}\n`;
-          fullMessage += `   • No. Dokumen: ${customer.docNo}\n`;
-          if (customer.address && customer.address !== 'Tidak diketahui') {
-            fullMessage += `   • Alamat: ${customer.address.substring(0, 80)}${customer.address.length > 80 ? '...' : ''}\n`;
-          }
-          if (customer.coordinates) {
-            fullMessage += `   • Koordinat: ${customer.coordinates}\n`;
-          }
-          fullMessage += `   ⚠️ Periksa alamat atau koordinat customer ini!\n\n`;
-        });
-      }
-      
-      if (suggestions.length > 0) {
-        fullMessage += '💡 Saran perbaikan:\n';
-        suggestions.forEach((suggestion, index) => {
-          fullMessage += `${index + 1}. ${suggestion}\n`;
-        });
-      }
-
-      // Tambahkan informasi detail untuk debugging (hanya untuk error tertentu)
-      if (request && (status === 'ZERO_RESULTS' || status === 'NOT_FOUND')) {
-        const originInfo = typeof request.origin === 'string' ? request.origin : 
-                          (request.origin?.lat && request.origin?.lng ? 
-                           `${request.origin.lat()}, ${request.origin.lng()}` : 'Tidak diketahui');
-        const destInfo = typeof request.destination === 'string' ? request.destination : 
-                         (request.destination?.lat && request.destination?.lng ? 
-                          `${request.destination.lat()}, ${request.destination.lng()}` : 'Tidak diketahui');
-        const waypointCount = request.waypoints ? request.waypoints.length : 0;
-        
-        fullMessage += `\n📋 Detail Request:\n`;
-        fullMessage += `- Titik Asal (Origin): ${originInfo.substring(0, 100)}${originInfo.length > 100 ? '...' : ''}\n`;
-        fullMessage += `- Titik Tujuan (Destination): ${destInfo.substring(0, 100)}${destInfo.length > 100 ? '...' : ''}\n`;
-        if (waypointCount > 0) {
-          fullMessage += `- Jumlah Titik Perhentian: ${waypointCount}\n`;
-        }
-      }
-
-      return fullMessage;
-    }
-
-    // Fungsi helper untuk memanggil directionsService.route() dengan error handling yang proper
-    function getDirections(request, customerInfo = null) {
-      return new Promise((resolve, reject) => {
-        directionsService.route(request, (response, status) => {
-          if (status === 'OK' && response.routes && response.routes.length > 0) {
-            resolve(response);
-          } else {
-            const errorMessage = interpretDirectionsError(status, request, customerInfo);
-            reject(new Error(errorMessage));
-          }
-        });
-      });
     }
 
     // Fungsi untuk switch form tab
@@ -3388,7 +3151,7 @@
             continue;
           }
           
-          // Prioritas koordinat jika tersedia (lebih akurat)
+          // Jika ada koordinat, validasi
           if (latStr || lngStr) {
             const lat = parseFloat(latStr);
             const lng = parseFloat(lngStr);
@@ -3405,14 +3168,10 @@
               continue;
             }
             
-            // Simpan dengan koordinat (prioritas), tapi simpan juga alamat jika ada untuk referensi
-            const customerData = { name, docNo, lat, lng, notes };
-            if (address && address.trim()) {
-              customerData.address = address; // Simpan alamat juga untuk referensi
-            }
-            customersData.hybrid.push(customerData);
-          } else if (address && address.trim()) {
-            // Jika tidak ada koordinat, gunakan alamat
+            // Simpan dengan koordinat
+            customersData.hybrid.push({ name, docNo, lat, lng, notes });
+          } else {
+            // Simpan dengan alamat
             customersData.hybrid.push({ name, docNo, address, notes });
           }
           
@@ -3666,20 +3425,13 @@
           optimizeWaypoints: false,
           waypoints,
         };
-        // Siapkan informasi customer untuk error handling
-        const customerInfo = {
-          customers: resolvedCustomers,
-          order: order,
-          startIndex: 0
-        };
-        const response = await getDirections(request, customerInfo);
+        const response = await directionsService.route(request);
         renderRoute(response, { geometry: { location: origin }, formatted_address: storeResolved.formatted }, order, resolvedCustomers);
         renderDropList(order, resolvedCustomers);
         renderDesktopDropTable(order, resolvedCustomers);
       } catch (err) {
         console.error(err);
-        const errorMsg = err.message || 'Gagal merender ulang rute.';
-        showError(errorMsg);
+        showError('Gagal merender ulang rute.');
       }
     }
 
@@ -3843,12 +3595,23 @@
           const originResolved = await getStoreOrigin();
           const origin = originResolved.location;
 
-          // Process setiap customer - prioritas koordinat jika tersedia
+          // Process setiap customer - bisa alamat atau koordinat
           for (let i = 0; i < customersInput.length; i++) {
             const customer = customersInput[i];
             
-            // Prioritas 1: Gunakan koordinat jika tersedia (lebih akurat)
-            if (!isNaN(customer.lat) && !isNaN(customer.lng)) {
+            if (customer.address && customer.address.trim()) {
+              // Menggunakan alamat
+              const dummyInput = document.createElement('input');
+              dummyInput.value = customer.address;
+              const resolved = await getPlaceOrGeocode(dummyInput, null);
+              resolvedCustomers.push({
+                name: customer.name,
+                docNo: customer.docNo,
+                formatted: resolved.formatted,
+                location: resolved.location,
+                notes: customer.notes || '',
+              });
+            } else if (!isNaN(customer.lat) && !isNaN(customer.lng)) {
               // Menggunakan koordinat
               const location = new google.maps.LatLng(customer.lat, customer.lng);
               
@@ -3869,21 +3632,6 @@
                 formatted: geocodeResp.formatted_address || `${customer.lat}, ${customer.lng}`,
                 location: location,
                 notes: customer.notes || '',
-                // Simpan koordinat asli untuk referensi
-                originalLat: customer.lat,
-                originalLng: customer.lng
-              });
-            } else if (customer.address && customer.address.trim()) {
-              // Prioritas 2: Gunakan alamat jika koordinat tidak tersedia
-              const dummyInput = document.createElement('input');
-              dummyInput.value = customer.address;
-              const resolved = await getPlaceOrGeocode(dummyInput, null);
-              resolvedCustomers.push({
-                name: customer.name,
-                docNo: customer.docNo,
-                formatted: resolved.formatted,
-                location: resolved.location,
-                notes: customer.notes || '',
               });
             }
           }
@@ -3901,12 +3649,9 @@
     }
 
     // Fungsi helper untuk memproses rute dengan customers yang sudah di-resolve
-    // Mendukung hingga 30 customer dengan membagi menjadi batch jika > 25 waypoints
     async function processRouteWithCustomers(origin, originFormatted, resolvedCustomers) {
-      const MAX_WAYPOINTS = 25; // Batasan Google Maps Directions API
       const customerLatLngs = resolvedCustomers.map(c => c.location);
       let order;
-      
       try {
         order = await computeNearestOrder(origin, customerLatLngs);
       } catch (e) {
@@ -3918,220 +3663,23 @@
           throw e;
         }
       }
+      const waypoints = buildWaypointsFromOrder(resolvedCustomers, order);
 
-      // Jika customer <= 25, proses seperti biasa
-      if (resolvedCustomers.length <= MAX_WAYPOINTS) {
-        const waypoints = buildWaypointsFromOrder(resolvedCustomers, order);
-        const request = {
-          origin,
-          destination: origin,
-          travelMode: google.maps.TravelMode.DRIVING,
-          provideRouteAlternatives: false,
-          optimizeWaypoints: false,
-          waypoints,
-        };
-
-        try {
-          // Siapkan informasi customer untuk error handling
-          const customerInfo = {
-            customers: resolvedCustomers,
-            order: order,
-            startIndex: 0
-          };
-          const response = await getDirections(request, customerInfo);
-          renderRoute(response, { geometry: { location: origin }, formatted_address: originFormatted }, order, resolvedCustomers);
-        } catch (directionsError) {
-          console.error('Error in getDirections:', directionsError);
-          showError(directionsError.message);
-          throw directionsError;
-        }
-      } else {
-        // Jika customer > 25, bagi menjadi beberapa batch
-        await processRouteWithBatches(origin, originFormatted, resolvedCustomers, order, MAX_WAYPOINTS);
-      }
-    }
-
-    // Fungsi untuk memproses rute dengan multiple batches (untuk > 25 customer)
-    async function processRouteWithBatches(origin, originFormatted, resolvedCustomers, order, maxWaypoints) {
-      // Bagi order menjadi batch-batch
-      const batches = [];
-      for (let i = 0; i < order.length; i += maxWaypoints) {
-        batches.push(order.slice(i, i + maxWaypoints));
-      }
-
-      const allLegs = [];
-      const allDropPoints = [];
-      let totalMeters = 0;
-      let totalSeconds = 0;
-      let currentDropIndex = 0;
-
-      // Proses setiap batch
-      for (let batchIndex = 0; batchIndex < batches.length; batchIndex++) {
-        const batchOrder = batches[batchIndex];
-        const batchCustomers = batchOrder.map(idx => resolvedCustomers[idx]);
-        const waypoints = batchCustomers.map(c => ({ location: c.location, stopover: true }));
-
-        // Untuk batch pertama, origin adalah toko
-        // Untuk batch selanjutnya, origin adalah customer terakhir dari batch sebelumnya
-        let batchOrigin = origin;
-        if (batchIndex > 0) {
-          // Origin batch ini adalah customer terakhir dari batch sebelumnya
-          const prevBatchLastIdx = batches[batchIndex - 1][batches[batchIndex - 1].length - 1];
-          batchOrigin = resolvedCustomers[prevBatchLastIdx].location;
-        }
-
-        // Destination: untuk batch terakhir kembali ke toko, untuk batch lain ke customer terakhir batch ini
-        let batchDestination = origin; // Selalu kembali ke toko di akhir
-        let batchWaypoints = waypoints;
-
-        // Jika bukan batch terakhir, destination adalah customer terakhir batch ini
-        // dan waypoint terakhir tidak perlu karena sudah jadi destination
-        if (batchIndex < batches.length - 1) {
-          batchDestination = batchCustomers[batchCustomers.length - 1].location;
-          batchWaypoints = waypoints.slice(0, -1); // Hapus waypoint terakhir
-        }
-
-        // Simpan offset global untuk batch ini (sebelum increment)
-        const batchGlobalOffset = currentDropIndex;
-
-        const request = {
-          origin: batchOrigin,
-          destination: batchDestination,
-          travelMode: google.maps.TravelMode.DRIVING,
-          provideRouteAlternatives: false,
-          optimizeWaypoints: false,
-          waypoints: batchWaypoints,
-        };
-
-        try {
-          // Siapkan informasi customer untuk error handling
-          const customerInfo = {
-            customers: resolvedCustomers,
-            order: batchOrder,
-            startIndex: batchGlobalOffset
-          };
-          const response = await getDirections(request, customerInfo);
-          const route = response.routes[0];
-          const legs = route.legs;
-
-          // Tambahkan legs ke allLegs
-          legs.forEach((leg, legIndex) => {
-            allLegs.push(leg);
-            totalMeters += leg.distance?.value || 0;
-            totalSeconds += leg.duration?.value || 0;
-          });
-
-          // Tambahkan drop points untuk batch ini
-          batchOrder.forEach((custIndex, idx) => {
-            const c = resolvedCustomers[custIndex];
-            allDropPoints.push({
-              name: c.name || ('Customer ' + (currentDropIndex + 1)),
-              docNo: c.docNo,
-              address: c.formatted,
-              notes: c.notes || '',
-              latitude: c.location.lat(),
-              longitude: c.location.lng(),
-              batchNumber: batchIndex + 1
-            });
-            currentDropIndex++;
-          });
-
-          // Render batch route di peta
-          renderBatchRoute(route, batchIndex, batchCustomers, batchOrder, resolvedCustomers, origin, originFormatted, batchGlobalOffset);
-        } catch (error) {
-          console.error(`Error processing batch ${batchIndex + 1}:`, error);
-          // Tambahkan informasi batch ke error message
-          const batchInfo = `\n\n📍 Informasi Batch yang Error:\n`;
-          const batchInfoDetail = `- Batch: ${batchIndex + 1} dari ${batches.length}\n`;
-          const batchInfoRange = `- Customer: ${batchGlobalOffset + 1} sampai ${batchGlobalOffset + batchOrder.length}\n`;
-          const batchInfoList = batchOrder.map((idx, i) => {
-            const c = resolvedCustomers[idx];
-            return `  ${i + 1}. ${c.name || 'Tanpa Nama'} (${c.docNo}) - ${c.formatted}`;
-          }).join('\n');
-          
-          const enhancedError = new Error(
-            `Gagal memproses batch ${batchIndex + 1} dari ${batches.length}:\n\n${error.message}${batchInfo}${batchInfoDetail}${batchInfoRange}\nDaftar Customer di Batch ini:\n${batchInfoList}`
-          );
-          throw enhancedError;
-        }
-      }
-
-      // Simpan data rute gabungan untuk download
-      currentRouteData = {
-        storeAddress: originFormatted || 'Origin',
-        legs: allLegs,
-        totalDistance: formatDistance(totalMeters),
-        totalDuration: formatDuration(totalSeconds),
-        dropPoints: allDropPoints
+      const request = {
+        origin,
+        destination: origin,
+        travelMode: google.maps.TravelMode.DRIVING,
+        provideRouteAlternatives: false,
+        optimizeWaypoints: false,
+        waypoints,
       };
 
-      // Tampilkan button ringkasan rute
-      dom.summaryButtonContainer().classList.remove('hidden');
-
-      // Fit bounds untuk semua marker
-      const bounds = new google.maps.LatLngBounds();
-      bounds.extend(origin);
-      resolvedCustomers.forEach(c => bounds.extend(c.location));
-      map.fitBounds(bounds);
-
-      // Scroll ke map setelah rute dirender
-      setTimeout(() => {
-        const mapElement = document.getElementById('map');
-        if (mapElement) {
-          mapElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        }
-      }, 300);
-
-      showSuccess(`Rute berhasil diproses untuk ${resolvedCustomers.length} customer (dibagi menjadi ${batches.length} batch).`);
-    }
-
-    // Fungsi untuk render batch route di peta
-    function renderBatchRoute(route, batchIndex, batchCustomers, batchOrder, resolvedCustomers, origin, originFormatted, globalOffset) {
-      // Place marker untuk origin jika batch pertama
-      if (batchIndex === 0) {
-        const originPos = origin;
-        placeMarker(originPos, 'Toko: ' + (originFormatted || 'Origin'));
-      }
-
-      // Place markers untuk customers di batch ini
-      batchOrder.forEach((custIndex, idx) => {
-        const c = resolvedCustomers[custIndex];
-        const globalIndex = globalOffset + idx;
-        placeMarker(c.location, `Drop ${globalIndex + 1}: ${c.name || ('Customer ' + (globalIndex + 1))} — ${c.docNo} — ${c.formatted}`);
-      });
-
-      // Render polyline untuk batch ini dengan warna berbeda
-      const legs = route.legs;
-      for (let i = 0; i < legs.length; i++) {
-        const leg = legs[i];
-        const path = [];
-        leg.steps.forEach(s => {
-          s.path.forEach(p => path.push(p));
-        });
-        
-        // Gunakan warna berbeda untuk setiap batch
-        const batchColors = [
-          '#1e88e5', '#43a047', '#f4511e', '#8e24aa', '#fb8c00',
-          '#3949ab', '#00acc1', '#6d4c41', '#e53935', '#7cb342'
-        ];
-        const color = batchColors[batchIndex % batchColors.length];
-        
-        const poly = new google.maps.Polyline({
-          path,
-          strokeColor: color,
-          strokeOpacity: 0.9,
-          strokeWeight: 5,
-          map,
-          icons: [{
-            icon: { path: google.maps.SymbolPath.FORWARD_CLOSED_ARROW },
-            offset: '100%',
-          }],
-        });
-        
-        // Animasi polyline dengan delay berdasarkan batch
-        poly.setOptions({ strokeOpacity: 0 });
-        setTimeout(() => poly.setOptions({ strokeOpacity: 0.9 }), 200 + (batchIndex * 500) + (i * 150));
-        customPolylines.push(poly);
+      const response = await directionsService.route(request);
+      try {
+        renderRoute(response, { geometry: { location: origin }, formatted_address: originFormatted }, order, resolvedCustomers);
+      } catch (renderError) {
+        console.error('Error in renderRoute:', renderError);
+        showError('Gagal merender rute: ' + renderError.message);
       }
     }
 
@@ -4242,8 +3790,8 @@
         coordinates: [],
         hybrid: []
       };
-      // Reset ke tab hybrid (default)
-      switchFormTab('hybrid');
+      // Reset ke tab pertama
+      switchFormTab('address');
       // Render ulang list customer (akan menampilkan pesan kosong)
       renderCustomerList('address');
       renderCustomerList('coordinates');
