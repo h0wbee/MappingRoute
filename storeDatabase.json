@@ -196,6 +196,20 @@
     "longitude": 122.51967710985471
   },
   {
+    "store": "11005 - Perintis - MKS",
+    "address": "Jl. Perintis Kemerdekaan, Tamalanrea Jaya, Kec. Tamalanrea, Kota Makassar, Sulawesi Selatan",
+    "postal_code": "90245",
+    "latitude": -5.14328113328297,
+    "longitude": 119.47714897342362
+  },
+  {
+    "store": "11006 - Pengayoman - MKS",
+    "address": "Jl. Pengayoman Blok A9, RT.009/RW.03, Pandang, Kec. Panakkukang, Kota Makassar, Sulawesi Selatan",
+    "postal_code": "90221",
+    "latitude": -5.160632863829329,
+    "longitude": 119.45072419963509
+  },
+  {
     "store": "12000 - Mataram - MTR",
     "address": "Jl. Terusan Bung Hatta No.107, Karang Baru, Kec. Selaparang, Kota Mataram, Nusa Tenggara Bar.",
     "postal_code": "83123",
